@@ -1,17 +1,33 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Layout :config="config">
+      <Layout orientation="horizontal">
+        <Item background="red">This</Item>
+        <Item background="green">is</Item>
+        <Item background="blue">horizontal.</Item>
+      </Layout>
+      <Item background="yellow">This</Item>
+      <Item background="cyan">is</Item>
+      <Item background="magenta">vertical.</Item>
+    </Layout>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import layoutConfig from '../config/layout.json'
+import Layout from './components/Layout.vue'
+import Item from './components/Item.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Layout,
+    Item,
+  },
+  data() {
+    return {
+      config: layoutConfig,
+    }
   }
 }
 </script>

@@ -1,0 +1,58 @@
+{
+  "component": "Layout",
+  "props": {
+    "orientation": "vertical"
+  },
+  "children": [
+    {
+      "component": "Layout",
+      "props": {
+        "orientation": "horizontal"
+      },
+      "children": [
+        {
+          "component": "Item",
+          "props": {
+            "background": "red",
+            "content": "This"
+          }
+        },
+        {
+          "component": "Item",
+          "props": {
+            "background": "green",
+            "content": "is"
+          }
+        },
+        {
+          "component": "Item",
+          "props": {
+            "background": "red",
+            "content": "horizontal."
+          }
+        }
+      ]
+    },
+    {
+      "component": "Item",
+      "props": {
+        "background": "yellow",
+        "content": "This"
+      }
+    },
+    {
+      "component": "Item",
+      "props": {
+        "background": "cyan",
+        "content": "is"
+      }
+    },
+    {
+      "component": "Item",
+      "props": {
+        "background": "magenta",
+        "content": "vertical."
+      }
+    }
+  ]
+}
