@@ -1,5 +1,5 @@
 <template>
-  <div class="Layout_Item" :style="style">
+  <div class="Item" :style="style" @click="onClick">
     {{ content }}
   </div>
 </template>
@@ -19,12 +19,19 @@ export default {
         background,
       }
     }
+  },
+  methods: {
+    onClick() {
+      console.log('clicked')
+    }
   }
 }
 </script>
 
-<style scoped>
-.Layout_Item {
-  flex-grow: 1;
+<style>
+.Item {
+  height: 100%;
+  min-height: 50px;
+  line-height: 50px;
 }
 </style>
