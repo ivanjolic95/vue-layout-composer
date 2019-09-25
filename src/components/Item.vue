@@ -1,5 +1,5 @@
 <template>
-  <div class="Layout_Item" :style="style">
+  <div class="Item" :style="style">
     {{ content }}
   </div>
 </template>
@@ -24,7 +24,8 @@ export default {
 </script>
 
 <style scoped>
-.Layout_Item {
-  flex-grow: 1;
+.Item {
+  height: 50px;
+  line-height: 50px;
 }
 </style>

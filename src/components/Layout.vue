@@ -1,20 +1,26 @@
 <template>
   <div class="Layout" :class="classes">
-    <component
+    <Cell
+      :display="child.display"
       v-for="child in children"
-      v-bind="child.props"
-      :config="child"
-      :is="child.component"
-      :key="child.component" />
+      :key="child.component"
+    >
+      <component
+        v-bind="child.props"
+        :config="child"
+        :is="child.component" />
+    </Cell>
   </div>
 </template>
 
 <script>
+import Cell from './Cell'
 import Item from './Item'
 
 export default {
   name: 'Layout',
   components: {
+    Cell,
     Item,
   },
   props: {

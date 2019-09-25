@@ -12,6 +12,9 @@
       "children": [
         {
           "component": "Item",
+          "display": {
+            "weight": 1
+          },
           "props": {
             "background": "red",
             "content": "This"
@@ -19,6 +22,9 @@
         },
         {
           "component": "Item",
+          "display": {
+            "weight": 2
+          },
           "props": {
             "background": "green",
             "content": "is"
@@ -26,8 +32,11 @@
         },
         {
           "component": "Item",
+          "display": {
+            "weight": 1
+          },
           "props": {
-            "background": "red",
+            "background": "blue",
             "content": "horizontal."
           }
         }
