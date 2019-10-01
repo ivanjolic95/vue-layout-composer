@@ -1,8 +1,6 @@
 <template>
   <div class="Layout"
     :class="classes"
-    @dragover.prevent
-    @drop.stop="onDrop($event)"
   >
     <Cell
       :display="child.display"
@@ -20,8 +18,10 @@
 </template>
 
 <script>
-import Cell from './Cell'
-import Item from './Item'
+import Cell from './components/Cell'
+import Item from './components/Item'
+
+import UiUtils from './utils/ui'
 
 export default {
   name: 'Layout',
@@ -40,6 +40,21 @@ export default {
       height: 0,
     }
   },
+  mounted() {
+    if (window.documentHasDropListener) return
+
+    document.addEventListener('dragover', (event) => {
+      event.preventDefault()
+    })
+
+    document.addEventListener('drop', (event) => {
+      const cellId = event.dataTransfer.getData("text")
+
+      UiUtils.moveCellToPlaceholderPosition(cellId)
+    })
+
+    window.documentHasDropListener = true
+  },
   computed: {
     classes() {
       if (!this.config) return ''
@@ -54,23 +69,10 @@ export default {
       return this.config.children || []
     }
   },
-  methods: {
-    onDrop(event) {
-      event.preventDefault()
-      const fakeEl = document.querySelector('.Layout_Cell--placeholder')
-      const data = event.dataTransfer.getData("text")
-      const el = document.getElementById(data)
-      
-      fakeEl.parentNode.insertBefore(el, fakeEl.nextSibling)
-      fakeEl.remove()
-
-      el.style.display = 'block'
-    }
-  }
 }
 </script>
 
-<style scoped>
+<style>
 .Layout {
   display: flex;
   box-sizing: border-box;

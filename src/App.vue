@@ -11,7 +11,7 @@
 <script>
 import layoutConfig from '../config/layout.json'
 import { addIds } from './utils/layout.js'
-import Layout from './components/Layout.vue'
+import Layout from './components/Layout'
 
 export default {
   name: 'app',
