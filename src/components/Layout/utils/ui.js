@@ -12,6 +12,21 @@ const moveCellToPlaceholderPosition = (cellId) => {
   $placeholder.parentNode.insertBefore($cell, $placeholder.nextSibling)
 }
 
+const getParentId = (cellId) => {
+  const $cell = document.getElementById(cellId)
+
+  return $cell.parentElement.id
+}
+
+const getPrevSiblingId = (cellId) => {
+  const $cell = document.getElementById(cellId)
+
+  return $cell.previousElementSibling && $cell.previousSibling.id.slice(5)
+}
+
 export default {
   moveCellToPlaceholderPosition,
+  showElement,
+  getParentId,
+  getPrevSiblingId,
 }

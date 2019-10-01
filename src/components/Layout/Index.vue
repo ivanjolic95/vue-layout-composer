@@ -22,6 +22,9 @@ import Cell from './components/Cell'
 import Item from './components/Item'
 
 import UiUtils from './utils/ui'
+import LayoutUtils from './utils/layout'
+
+import layoutConfig from '../../../config/layout.json'
 
 export default {
   name: 'Layout',
@@ -51,6 +54,15 @@ export default {
       const cellId = event.dataTransfer.getData("text")
 
       UiUtils.moveCellToPlaceholderPosition(cellId)
+
+      setTimeout(() => {
+        const parentId = UiUtils.getParentId(cellId)
+        const prevSiblingId = UiUtils.getPrevSiblingId(cellId)
+
+        console.log(parentId, prevSiblingId)
+
+        console.log(LayoutUtils.moveElementToNewPosition(layoutConfig, cellId, parentId, prevSiblingId))
+      }, 100)
     })
 
     window.documentHasDropListener = true
