@@ -16,7 +16,7 @@
             "weight": 1
           },
           "props": {
-            "background": "red",
+            "background": "#E6E7E8",
             "content": "This"
           }
         },
@@ -26,7 +26,7 @@
             "weight": 2
           },
           "props": {
-            "background": "green",
+            "background": "#E6E7E8",
             "content": "is"
           }
         },
@@ -36,7 +36,7 @@
             "weight": 1
           },
           "props": {
-            "background": "gray",
+            "background": "#E6E7E8",
             "content": "horizontal."
           }
         }
@@ -45,21 +45,21 @@
     {
       "component": "Item",
       "props": {
-        "background": "blue",
+        "background": "#E6E7E8",
         "content": "This"
       }
     },
     {
       "component": "Item",
       "props": {
-        "background": "green",
+        "background": "#E6E7E8",
         "content": "is"
       }
     },
     {
       "component": "Item",
       "props": {
-        "background": "orange",
+        "background": "#E6E7E8",
         "content": "vertical."
       }
     },
@@ -84,7 +84,7 @@
                 "weight": 1
               },
               "props": {
-                "background": "yellow",
+                "background": "#E6E7E8",
                 "content": "and"
               }
             },
@@ -94,7 +94,7 @@
                 "weight": 1
               },
               "props": {
-                "background": "magenta",
+                "background": "#E6E7E8",
                 "content": "vertical."
               }
             }
@@ -106,7 +106,7 @@
             "weight": 1
           },
           "props": {
-            "background": "red",
+            "background": "#E6E7E8",
             "content": "is"
           }
         },
@@ -116,7 +116,7 @@
             "weight": 1
           },
           "props": {
-            "background": "green",
+            "background": "#E6E7E8",
             "content": "horizontal."
           }
         },
@@ -126,7 +126,7 @@
             "weight": 1
           },
           "props": {
-            "background": "yellow",
+            "background": "#E6E7E8",
             "content": "horizontal."
           }
         }

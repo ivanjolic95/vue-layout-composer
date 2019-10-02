@@ -1,40 +1,47 @@
 <template>
   <div id="app">
-    <Layout
+    <MetodaGrid
+      :displayComponents="displayComponents"
       :config="config"
-      :id="config.id"
-      v-bind="config.props"
+      @change:config="onConfigChange($event)"
+      editable
     />
   </div>
 </template>
 
 <script>
-import layoutConfig from '../config/layout.json'
-import { addIds } from './utils/layout.js'
-import Layout from './components/Layout'
+import config from '../config/layout.json'
+import MetodaGrid from './components/MetodaGrid'
+
+import Item from './components/Item'
 
 export default {
   name: 'app',
   components: {
-    Layout,
+    MetodaGrid,
   },
   data() {
-    addIds(layoutConfig)
-
     return {
-      config: layoutConfig,
+      displayComponents: {
+        'Item': Item,
+      },
+      config,
     }
-  }
+  },
+  methods: {
+    onConfigChange(event) {
+      console.log(event)
+    },
+  },
 }
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

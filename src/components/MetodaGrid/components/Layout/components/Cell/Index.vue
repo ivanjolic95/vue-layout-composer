@@ -3,12 +3,12 @@
     class="Layout_Cell"
     :style="style"
     :id="`cell-${id}`"
-    draggable
+    :draggable="editable"
     @dragstart="onDragStart($event)"
     @drag="onDrag($event)"
     @dragend="onDragEnd($event)"
   >
-    <span class="Layout_Cell__id">{{id}}</span>
+    <span class="Layout_Cell__id" v-if="editable">{{id}}</span>
     <slot />
   </div>
 </template>
@@ -19,6 +19,7 @@ export default {
   props: {
     id:       Number,
     display:  Object,
+    editable: Boolean,
   },
   data() {
     return {
@@ -47,8 +48,10 @@ export default {
       const x = event.clientX - rect.left
       const y = event.clientY - rect.top
 
-      this.mousePosInElX = x > 50 ? 50 : x
-      this.mousePosInElY = y > 50 ? 50 : y
+      const dragAreaTreshold = 20
+
+      this.mousePosInElX = x > dragAreaTreshold ? dragAreaTreshold : x
+      this.mousePosInElY = y > dragAreaTreshold ? dragAreaTreshold : y
     },
     createPlaceholderElement() {
       const { targetEl } = this
@@ -71,11 +74,13 @@ export default {
          e.preventDefault()
       })
       $placeholderEl.className = 'Layout_Cell--placeholder'
+      $placeholderEl.style.flexGrow = targetEl.style.flexGrow
       $placeholderEl.prepend($placeholderChild)
 
       this.placeholderEl = $placeholderEl
     },
     onDragStart(event) {
+      if (!this.editable) return
       this.targetEl = event.target
 
       this.setMousePositionInDraggedElement(event)
@@ -148,6 +153,7 @@ export default {
       !$childBeforeEl && lastLayoutEl.prepend(placeholderEl)
     },
     onDrag(event) {
+      if (!this.editable) return
       const startX = event.clientX - this.mousePosInElX
       const startY = event.clientY - this.mousePosInElY
 
@@ -160,6 +166,7 @@ export default {
       this.appendPlaceholderToDOM($siblings, startX, startY)
     },
     onDragEnd(event) {
+      if (!this.editable) return
       const CELL_PLACEHOLDER_CLASS = '.Layout_Cell--placeholder';
       const { targetEl } = this;
 
@@ -174,20 +181,19 @@ export default {
 .Layout_Cell, .Layout_Cell--placeholder {
   position: relative;
   flex-grow: 1;
-  padding: 5px;
-  background: #fff;
-  margin: 15px;
+  margin: 5px;
   flex-basis: 0;
 }
 
 .Layout_Cell--placeholder {
-  background: #c3c3c3;
+  background: #03A696;
+  color: #fff;
 }
 
   .Layout_Cell__id {
     position: absolute;
-    top: 7px;
-    left: 7px;
-    font-size: 12px;
+    top: 2px;
+    left: 2px;
+    font-size: 10px;
   }
 </style>
