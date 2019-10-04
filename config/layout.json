@@ -70,6 +70,36 @@
       },
       "children": [
         {
+          "component": "Item",
+          "display": {
+            "weight": 1
+          },
+          "props": {
+            "background": "#E6E7E8",
+            "content": "This"
+          }
+        },
+        {
+          "component": "Item",
+          "display": {
+            "weight": 1
+          },
+          "props": {
+            "background": "#E6E7E8",
+            "content": "is"
+          }
+        },
+        {
+          "component": "Item",
+          "display": {
+            "weight": 1
+          },
+          "props": {
+            "background": "#E6E7E8",
+            "content": "horizontal."
+          }
+        },
+        {
           "component": "Layout",
           "display": {
             "weight": 1
@@ -99,36 +129,6 @@
               }
             }
           ]
-        },
-        {
-          "component": "Item",
-          "display": {
-            "weight": 1
-          },
-          "props": {
-            "background": "#E6E7E8",
-            "content": "is"
-          }
-        },
-        {
-          "component": "Item",
-          "display": {
-            "weight": 1
-          },
-          "props": {
-            "background": "#E6E7E8",
-            "content": "horizontal."
-          }
-        },
-        {
-          "component": "Item",
-          "display": {
-            "weight": 1
-          },
-          "props": {
-            "background": "#E6E7E8",
-            "content": "horizontal."
-          }
         }
       ]
     }

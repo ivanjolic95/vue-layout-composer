@@ -73,6 +73,7 @@ export default {
   created() {
     this.internalConfig = _.cloneDeep(this.config)
     LayoutUtils.addIds(this.internalConfig)
+    LayoutUtils.addMargins(this.internalConfig)
   },
   mounted() {
     if (window.documentHasDropListener) return
@@ -117,6 +118,7 @@ export default {
         try {
           this.internalConfig = JSON.parse(newValue)
           LayoutUtils.addIds(this.internalConfig)
+          LayoutUtils.addMargins(this.internalConfig)
         } catch(e) {}
       },
     },

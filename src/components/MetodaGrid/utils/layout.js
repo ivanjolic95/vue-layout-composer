@@ -30,6 +30,58 @@ const removeIds = (jsonConfig) => {
   return _removeIds(jsonConfig)
 }
 
+const addMargins = (jsonConfig) => {
+  function _addMargins(config) {
+    if (!config) return
+    if (config.component !== 'Layout') return
+
+    if (config.props && config.props.orientation === 'horizontal') {
+      config.children = [
+        {
+          ...config.children[0],
+          display: {
+            marginTop: null,
+            marginLeft: null,
+          },
+        },
+        ...config.children.slice(1).map(child => ({
+          ...child,
+          display: {
+            ...child.display,
+            marginLeft: '8px',
+            marginTop: null,
+          },
+        })),
+      ]
+    }
+
+    if (config.props && config.props.orientation === 'vertical') {
+      config.children = [
+        {
+          ...config.children[0],
+          display: {
+            marginTop: null,
+            marginLeft: null,
+          },
+        },
+        ...config.children.slice(1).map(child => ({
+          ...child,
+          display: {
+            ...child.display,
+            marginLeft: null,
+            marginTop: '8px',
+          },
+        })),
+      ]
+    }
+
+    if (!config.children) return
+    config.children.forEach(child => _addMargins(child))
+  }
+
+  _addMargins(jsonConfig)
+}
+
 const removeCell = (config, cellId, parent = null, index = null) => {
   if (cellId === 0) {
     return false
@@ -82,6 +134,7 @@ const moveElementToNewPosition = (layoutJson, cellId, parentId, prevSiblingId) =
   const newLayoutJson = { ...layoutJson }
   const cellConfig = removeCell(newLayoutJson, cellId)
   addCell(newLayoutJson, cellConfig, parentId, prevSiblingId)
+  addMargins(newLayoutJson)
   return newLayoutJson
 }
 
@@ -89,4 +142,5 @@ export default {
   moveElementToNewPosition,
   addIds,
   removeIds,
+  addMargins,
 }

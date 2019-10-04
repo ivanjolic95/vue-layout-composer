@@ -1,19 +1,24 @@
 <template>
   <div
     class="Layout_Cell"
+    :class="classes"
     :style="style"
     :id="`cell-${id}`"
+    @mousemove.stop="hovered = true"
+    @mouseout="hovered = false"
     :draggable="editable"
     @dragstart="onDragStart($event)"
     @drag="onDrag($event)"
     @dragend="onDragEnd($event)"
   >
-    <span class="Layout_Cell__id" v-if="editable">{{id}}</span>
+    <!-- <span class="Layout_Cell__id" v-if="editable">{{id}}</span> -->
     <slot />
   </div>
 </template>
 
 <script>
+import UiUtils from '../../../../utils/ui'
+
 export default {
   name: 'Cell',
   props: {
@@ -29,16 +34,30 @@ export default {
       placeholderEl:        null,
       mousePosInElX:        0,
       mousePosInElY:        0,
+      hovered:              false,
     }
   },
   computed: {
     style() {
       if (!this.display) return {}
 
-      const { weight: flexGrow } = this.display
+      const {
+        weight: flexGrow,
+        marginTop,
+        marginLeft,
+      } = this.display
 
       return {
         flexGrow,
+        marginTop,
+        marginLeft,
+      }
+    },
+    classes() {
+      const { hovered, editable } = this
+
+      return {
+        'Layout_Cell--hovered': hovered && editable,
       }
     }
   },
@@ -48,7 +67,7 @@ export default {
       const x = event.clientX - rect.left
       const y = event.clientY - rect.top
 
-      const dragAreaTreshold = 20
+      const dragAreaTreshold = 10
 
       this.mousePosInElX = x > dragAreaTreshold ? dragAreaTreshold : x
       this.mousePosInElY = y > dragAreaTreshold ? dragAreaTreshold : y
@@ -57,17 +76,18 @@ export default {
       const { targetEl } = this
 
       const $placeholderText = document.createElement('p')
+      $placeholderText.style.lineHeight = `${targetEl.clientHeight}px`
+      $placeholderText.style.textAlign = 'center'
+      $placeholderText.style.marginTop = '0px'
+      $placeholderText.style.marginBottom = '0px'
       $placeholderText.innerText = 'Drop here!'
 
       const $cellChild = targetEl.children[0].cloneNode(false)
       const $placeholderChild = document.createElement('div')
       $placeholderChild.prepend($placeholderText)
-      $placeholderChild.style.height = '100%'
-      $placeholderChild.style.minHeight = $cellChild.style.minHeight
-      $placeholderChild.style.width = $cellChild.style.width
-      $placeholderChild.style.display = 'flex'
-      $placeholderChild.style.justifyContent = 'center'
-      $placeholderChild.style.alignItems = 'center'
+      $placeholderChild.style.height = `${targetEl.clientHeight}px`
+      $placeholderChild.style.width = '100%'
+      $placeholderChild.style.display = 'block'
 
       const $placeholderEl = document.createElement('div')
       $placeholderEl.addEventListener('dragover', function(e) {
@@ -75,6 +95,8 @@ export default {
       })
       $placeholderEl.className = 'Layout_Cell--placeholder'
       $placeholderEl.style.flexGrow = targetEl.style.flexGrow
+      $placeholderEl.style.minHeight = `${targetEl.clientHeight}px`
+      $placeholderEl.style.maxHeight = `${targetEl.clientHeight}px`
       $placeholderEl.prepend($placeholderChild)
 
       this.placeholderEl = $placeholderEl
@@ -112,9 +134,9 @@ export default {
     },
     getSiblingsFromLayout() {
       const { targetEl, lastLayoutEl } = this
-      return [ ...lastLayoutEl.children ].filter($el => {
+      return lastLayoutEl && [ ...lastLayoutEl.children ].filter($el => {
         return $el.__vue__ && $el.__vue__.id !== targetEl.__vue__.id
-      })
+      }) || []
     },
     appendPlaceholderToDOM($siblings, startX, startY) {
       const BIG_NUMBER = 100000000000
@@ -129,15 +151,27 @@ export default {
       let minDistance = BIG_NUMBER
       let $childBeforeEl = null
       $siblings.forEach($el => {
-        const { x, y } = $el.getBoundingClientRect()
+        let { x, y } = $el.getBoundingClientRect()
 
         if (lastLayoutComponent.$attrs.orientation === 'horizontal') {
+          placeholderEl.style.marginTop = '0px'
+          placeholderEl.style.marginLeft = '8px'
+
+          if ($el.previousSibling && $el.previousSibling.className && $el.previousSibling.className.indexOf('move')) {
+            x += $el.clientWidth / 2
+          }
           if (x < startX && minDistance > (startX - x)) {
             minDistance = startX - x
             $childBeforeEl = $el
           }
         }
         else if (lastLayoutComponent.$attrs.orientation === 'vertical') {
+          placeholderEl.style.marginTop = '8px'
+          placeholderEl.style.marginLeft = null
+
+          if ($el.previousSibling && $el.previousSibling.className && $el.previousSibling.className.indexOf('move')) {
+            y += $el.clientHeight / 2
+          }
           if (y < startY && minDistance > (startY - y)) {
             minDistance = startY - y
             $childBeforeEl = $el
@@ -149,8 +183,38 @@ export default {
 
       [...document.querySelectorAll(CELL_PLACEHOLDER_CLASS)].forEach(el => el.remove())
       targetEl.style.display = 'none'
+
       $childBeforeEl && $childBeforeEl.parentNode.insertBefore(placeholderEl, $childBeforeEl.nextSibling)
       !$childBeforeEl && lastLayoutEl.prepend(placeholderEl)
+
+      if (lastLayoutComponent.$attrs.orientation === 'horizontal') {
+        placeholderEl.style.marginTop = '0px'
+        placeholderEl.style.marginBottom = '0px'
+        if (!placeholderEl.previousSibling) {
+          placeholderEl.style.marginLeft = '0px'
+          if (placeholderEl.nextSibling) {
+            placeholderEl.style.marginRight = '8px'
+          }
+        } else {
+          if (placeholderEl.nextSibling) {
+            placeholderEl.style.marginRight = '0px'
+          }
+        }
+      } else {
+        placeholderEl.style.marginLeft = '0px'
+        placeholderEl.style.marginRight = '0px'
+        if (!placeholderEl.previousSibling) {
+          placeholderEl.style.marginTop = '0px'
+          if (placeholderEl.nextSibling) {
+            placeholderEl.style.marginRight = '0px'
+            placeholderEl.style.marginBottom = '8px'
+          }
+        } else {
+          if (placeholderEl.nextSibling) {
+            placeholderEl.style.marginBottom = '0px'
+          }
+        }
+      }
     },
     onDrag(event) {
       if (!this.editable) return
@@ -168,7 +232,7 @@ export default {
     onDragEnd(event) {
       if (!this.editable) return
       const CELL_PLACEHOLDER_CLASS = '.Layout_Cell--placeholder';
-      const { targetEl } = this;
+      const { targetEl, placeholderEl } = this;
 
       [...document.querySelectorAll(CELL_PLACEHOLDER_CLASS)].forEach(el => el.remove())
       if (targetEl) targetEl.style.display = 'block'
@@ -181,8 +245,14 @@ export default {
 .Layout_Cell, .Layout_Cell--placeholder {
   position: relative;
   flex-grow: 1;
-  margin: 5px;
+  margin: 0;
   flex-basis: 0;
+}
+
+.Layout_Cell--hovered {
+  cursor: grab;
+  background: #ccc;
+  opacity: 0.5;
 }
 
 .Layout_Cell--placeholder {
