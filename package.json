@@ -1,7 +1,17 @@
 {
-  "name": "metoda-grid",
+  "name": "vue-layout-composer",
   "version": "0.1.0",
   "private": true,
+  "description": "Dynamic, drag & drop, JSON-based grid layout for Vue",
+  "author": "Ivan Jolic <ivan.jolic1995@gmail.com>",
+  "main": "dist/vue-layout-composer.common.js",
+  "module": "dist/vue-layout-composer.esm.js",
+  "browser": "dist/vue-layout-composer.js",
+  "unpkg": "dist/vue-layout-composer.js",
+  "files": [
+    "dist/*",
+    "src/*"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -13,8 +23,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.7",
     "core-js": "^2.6.5",
     "lodash": "^4.17.15",
-    "vue": "^2.6.10",
-    "vue-grid-layout": "^2.3.6"
+    "vue": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",

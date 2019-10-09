@@ -1,17 +1,17 @@
 <template>
-  <div class="MetodaGrid">
+  <div class="LayoutComposer">
     <template v-if="internalEditable">
-      <div class="MetodaGrid__Actions">
+      <div class="LayoutComposer__Actions">
         <a
           href="#"
-          class="MetodaGrid__ActionButton"
+          class="LayoutComposer__ActionButton"
           @click.prevent="internalEditable = !internalEditable"
         >
           Lock
         </a>
         <a
           href="#"
-          class="MetodaGrid__ActionButton"
+          class="LayoutComposer__ActionButton"
           @click.prevent="isEditorShown = !isEditorShown"
         >
           {{editorButtonText}}
@@ -20,7 +20,7 @@
       <textarea
         v-if="isEditorShown"
         v-model="configHumanized"
-        class="MetodaGrid__Editor"
+        class="LayoutComposer__Editor"
       ></textarea>
     </template>
 
@@ -44,7 +44,7 @@ import LayoutUtils from './utils/layout'
 import Layout from './components/Layout'
 
 export default {
-  name: 'MetodaGrid',
+  name: 'LayoutComposer',
   components: {
     Layout,
   },
@@ -130,19 +130,19 @@ export default {
 </script>
 
 <style>
-.MetodaGrid {
+.LayoutComposer {
   display: flex;
   width: 100%;
   flex-direction: column;
 }
 
-  .MetodaGrid__Actions {
+  .LayoutComposer__Actions {
     display: flex;
     width: 100%;
     justify-content: flex-end;
   }
 
-  .MetodaGrid__ActionButton {
+  .LayoutComposer__ActionButton {
     align-self: flex-end;
     margin: 4px;
     padding: 10px 20px;
@@ -151,7 +151,7 @@ export default {
     background: #E6E7E8;
   }
 
-  .MetodaGrid__Editor {
+  .LayoutComposer__Editor {
     width: 100%;
     height: 400px;
   }

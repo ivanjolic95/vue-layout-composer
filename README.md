@@ -1,10 +1,10 @@
-# NAME_PLACEHOLDER
+# vue-layout-composer
 
 GIF_PLACEHOLDER
 
 Dynamic, drag & drop, JSON-based grid layout for Vue. 
 
-Create your components, specify your JSON layout configuration and let the NAME_PLACEHOLDER handle the rest.
+Create your components, specify your JSON layout configuration and let the vue-layout-composer handle the rest.
 
 ## Installation
 
@@ -18,12 +18,12 @@ INSTALLATION_PLACEHOLDER
 Vue.use(ComponentRegister)
 ```
 
-2. Use the MetodaGrid component
+2. Use the `LayoutComposer` component
 
 ```javascript
 <template>
   <div id="app">
-    <MetodaGrid
+    <LayoutComposer
       :displayComponents="displayComponents"  // register your components
       :config="config"                        // provide your layout config
       @change:config="onConfigChange($event)" // listen for changes in config (e.g. save it on server)
@@ -34,14 +34,14 @@ Vue.use(ComponentRegister)
 
 <script>
 import config from '../config/layout.json'
-import MetodaGrid from './components/MetodaGrid'
+import LayoutComposer from './components/LayoutComposer'
 
 import Item from './components/Item'
 
 export default {
   name: 'app',
   components: {
-    MetodaGrid,
+    LayoutComposer,
   },
   data() {
     return {
@@ -170,7 +170,7 @@ Used to register your local components in the grid system context. Just specify 
 }
 ```
 
-And you'll be able to write `"component": "Item"` and `"component": "OtherComponent"` in your layout config file and NAME_PLACEHOLDER will understand which components you want to use.
+And you'll be able to write `"component": "Item"` and `"component": "OtherComponent"` in your layout config file and vue-layout-composer will understand which components you want to use.
 
 ### `config` (required)
 
@@ -213,7 +213,7 @@ There **always needs to be** one root layout node.
 }
 ```
 
-Layout nodes are the ones that contain `"component": "Layout"`. Layout is a built-in layout component in NAME_PLACEHOLDER.
+Layout nodes are the ones that contain `"component": "Layout"`. Layout is a built-in layout component in vue-layout-composer.
 
 Layout nodes can be `horizontal` or `vertical`, which is specified in `props.orientation` attribute. The orientation specifies the direction the layout will put the components in.
 

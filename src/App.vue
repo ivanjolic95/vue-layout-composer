@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <MetodaGrid
+    <LayoutComposer
       :displayComponents="displayComponents"
       :config="config"
       @change:config="onConfigChange($event)"
@@ -11,14 +11,14 @@
 
 <script>
 import config from '../config/layout.json'
-import MetodaGrid from './components/MetodaGrid'
+import LayoutComposer from './components/LayoutComposer'
 
 import Item from './components/Item'
 
 export default {
   name: 'app',
   components: {
-    MetodaGrid,
+    LayoutComposer,
   },
   data() {
     return {

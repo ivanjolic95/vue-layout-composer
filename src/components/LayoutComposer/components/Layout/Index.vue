@@ -52,7 +52,7 @@ export default {
   created() {
     if (!this.displayComponents) return
     Object.keys(this.displayComponents).forEach(name =>
-      this.$metodaGrid.registerComponent(name, this.displayComponents[name])
+      this.$layoutComposer.registerComponent(name, this.displayComponents[name])
     )
   },
   computed: {
@@ -74,7 +74,7 @@ export default {
   methods: {
     getComponentName(config) {
       if (config.component.indexOf('Layout') === -1)
-        return this.$metodaGrid.getComponentName(config.component)
+        return this.$layoutComposer.getComponentName(config.component)
       else
         return config.component
     },

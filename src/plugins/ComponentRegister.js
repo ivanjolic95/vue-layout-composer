@@ -7,17 +7,16 @@ export default {
       getComponentName,
     } = this
     
-    Vue.prototype.$metodaGrid = {
+    Vue.prototype.$layoutComposer = {
       registerComponent: registerComponent(Vue),
       getComponentName,
     }
   },
   registerComponent(Vue) {
-    const self = this
     return (name, Component) =>
-      Vue.component(`metoda-grid-presenter-${name}`, Component)
+      Vue.component(`layout-composer-presenter-${name}`, Component)
   },
   getComponentName(name) {
-    return `metoda-grid-presenter-${name}`
+    return `layout-composer-presenter-${name}`
   }
 }
