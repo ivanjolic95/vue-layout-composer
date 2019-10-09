@@ -115,7 +115,7 @@ export default {
       const LAYOUT_CLASS = 'Layout'
       return document
         .elementsFromPoint(startX, startY)
-        .find(el => el.className.indexOf(`${LAYOUT_CLASS} `) !== -1)
+        .find(el => el.className && el.className.indexOf(`${LAYOUT_CLASS} `) !== -1)
     },
     setLayoutComponent($layoutEl) {
       let $currEl = $layoutEl
@@ -185,7 +185,9 @@ export default {
       targetEl.style.display = 'none'
 
       $childBeforeEl && $childBeforeEl.parentNode.insertBefore(placeholderEl, $childBeforeEl.nextSibling)
-      !$childBeforeEl && lastLayoutEl.prepend(placeholderEl)
+      !$childBeforeEl && lastLayoutEl && lastLayoutEl.prepend(placeholderEl)
+
+      if (!lastLayoutComponent) return
 
       if (lastLayoutComponent.$attrs.orientation === 'horizontal') {
         placeholderEl.style.marginTop = '0px'
@@ -222,6 +224,8 @@ export default {
       const startY = event.clientY - this.mousePosInElY
 
       const $layoutEl = this.getUnderlyingLayoutEl(startX, startY)
+
+      if (!$layoutEl) return
 
       this.setLayoutComponent($layoutEl)
       
