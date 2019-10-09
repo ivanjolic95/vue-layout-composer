@@ -16,7 +16,7 @@
             "weight": 1
           },
           "props": {
-            "background": "red",
+            "background": "#E6E7E8",
             "content": "This"
           }
         },
@@ -26,7 +26,7 @@
             "weight": 2
           },
           "props": {
-            "background": "green",
+            "background": "#E6E7E8",
             "content": "is"
           }
         },
@@ -36,7 +36,7 @@
             "weight": 1
           },
           "props": {
-            "background": "blue",
+            "background": "#E6E7E8",
             "content": "horizontal."
           }
         }
@@ -45,23 +45,92 @@
     {
       "component": "Item",
       "props": {
-        "background": "yellow",
+        "background": "#E6E7E8",
         "content": "This"
       }
     },
     {
       "component": "Item",
       "props": {
-        "background": "cyan",
+        "background": "#E6E7E8",
         "content": "is"
       }
     },
     {
       "component": "Item",
       "props": {
-        "background": "magenta",
+        "background": "#E6E7E8",
         "content": "vertical."
       }
+    },
+    {
+      "component": "Layout",
+      "props": {
+        "orientation": "horizontal"
+      },
+      "children": [
+        {
+          "component": "Item",
+          "display": {
+            "weight": 1
+          },
+          "props": {
+            "background": "#E6E7E8",
+            "content": "This"
+          }
+        },
+        {
+          "component": "Item",
+          "display": {
+            "weight": 1
+          },
+          "props": {
+            "background": "#E6E7E8",
+            "content": "is"
+          }
+        },
+        {
+          "component": "Item",
+          "display": {
+            "weight": 1
+          },
+          "props": {
+            "background": "#E6E7E8",
+            "content": "horizontal."
+          }
+        },
+        {
+          "component": "Layout",
+          "display": {
+            "weight": 1
+          },
+          "props": {
+            "orientation": "vertical"
+          },
+          "children": [
+            {
+              "component": "Item",
+              "display": {
+                "weight": 1
+              },
+              "props": {
+                "background": "#E6E7E8",
+                "content": "and"
+              }
+            },
+            {
+              "component": "Item",
+              "display": {
+                "weight": 1
+              },
+              "props": {
+                "background": "#E6E7E8",
+                "content": "vertical."
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }
