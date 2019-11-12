@@ -11,7 +11,7 @@
     @drag="onDrag($event)"
     @dragend.stop="onDragEnd($event)"
   >
-    <span class="Layout_Cell__id" v-if="editable">{{id}}</span>
+    <!-- <span class="Layout_Cell__id" v-if="editable">{{id}}</span> -->
     <slot />
   </div>
 </template>

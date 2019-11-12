@@ -1,5 +1,6 @@
 <template>
   <cell
+    :key="config.id"
     :display="config.display"
     :id="config.id"
     :config="config"

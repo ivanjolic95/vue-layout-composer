@@ -4,6 +4,7 @@
     :id="config.id"
     :config="config"
     :editable="internalEditable"
+    :key="config.id"
   >
     <div class="Layout"
       :class="classes"
