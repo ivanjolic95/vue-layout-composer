@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <LayoutComposer
+    <layout-composer
       :displayComponents="displayComponents"
       :config="config"
       @change:config="onConfigChange($event)"

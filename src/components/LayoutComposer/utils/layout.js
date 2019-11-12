@@ -39,15 +39,14 @@ const addMargins = (jsonConfig) => {
       config.children = [
         {
           ...config.children[0],
-          display: {
+          internalDisplay: {
             marginTop: null,
             marginLeft: null,
           },
         },
         ...config.children.slice(1).map(child => ({
           ...child,
-          display: {
-            ...child.display,
+          internalDisplay: {
             marginLeft: '8px',
             marginTop: null,
           },
@@ -59,15 +58,14 @@ const addMargins = (jsonConfig) => {
       config.children = [
         {
           ...config.children[0],
-          display: {
+          internalDisplay: {
             marginTop: null,
             marginLeft: null,
           },
         },
         ...config.children.slice(1).map(child => ({
           ...child,
-          display: {
-            ...child.display,
+          internalDisplay: {
             marginLeft: null,
             marginTop: '8px',
           },
@@ -130,12 +128,34 @@ const addCell = (config, cell, parentId, prevSiblingId) => {
   }
 }
 
-const moveElementToNewPosition = (layoutJson, cellId, parentId, prevSiblingId) => {
-  const newLayoutJson = { ...layoutJson }
-  const cellConfig = removeCell(newLayoutJson, cellId)
-  addCell(newLayoutJson, cellConfig, parentId, prevSiblingId)
-  addMargins(newLayoutJson)
-  return newLayoutJson
+const moveElementToNewLayout = (prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevSiblingId) => {
+  const newPrevParentLayoutJson = _.cloneDeep(prevParentLayoutJson)
+  const newNextParentLayoutJson = _.cloneDeep(nextParentLayoutJson)
+  const cellConfig = removeCell(newPrevParentLayoutJson, cellId)
+  addCell(newNextParentLayoutJson, cellConfig, parentId, prevSiblingId)
+  addMargins(newPrevParentLayoutJson)
+  addMargins(newNextParentLayoutJson)
+  return { newPrevParentLayoutJson, newNextParentLayoutJson }
+}
+
+const moveElementToNewPositionInLayout = (prevParentLayoutJson, cellId, parentId, prevSiblingId) => {
+  const newPrevParentLayoutJson = _.cloneDeep(prevParentLayoutJson)
+  const cellConfig = removeCell(newPrevParentLayoutJson, cellId)
+  addCell(newPrevParentLayoutJson, cellConfig, parentId, prevSiblingId)
+  addMargins(newPrevParentLayoutJson)
+  return { newPrevParentLayoutJson, newNextParentLayoutJson: null }
+}
+
+const moveElementToNewPosition = (prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevParentId, prevSiblingId) => {
+  let newPrevParentLayoutJson, newNextParentLayoutJson
+  
+  if (parentId !== prevParentId) {
+    ({ newPrevParentLayoutJson, newNextParentLayoutJson } = moveElementToNewLayout(prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevSiblingId))
+  } else {
+    ({ newPrevParentLayoutJson, newNextParentLayoutJson } = moveElementToNewPositionInLayout(prevParentLayoutJson, cellId, parentId, prevSiblingId))
+  }
+
+  return { newPrevParentLayoutJson, newNextParentLayoutJson }
 }
 
 export default {

@@ -9,15 +9,16 @@
     :draggable="editable"
     @dragstart="onDragStart($event)"
     @drag="onDrag($event)"
-    @dragend="onDragEnd($event)"
+    @dragend.stop="onDragEnd($event)"
   >
-    <!-- <span class="Layout_Cell__id" v-if="editable">{{id}}</span> -->
+    <span class="Layout_Cell__id" v-if="editable">{{id}}</span>
     <slot />
   </div>
 </template>
 
 <script>
 import UiUtils from '../../../../utils/ui'
+import LayoutUtils from '../../../../utils/layout'
 
 export default {
   name: 'Cell',
@@ -25,26 +26,42 @@ export default {
     id:       Number,
     display:  Object,
     editable: Boolean,
+    config:   Object,
   },
   data() {
     return {
-      targetEl:             null,
-      lastLayoutEl:         null,
-      lastLayoutComponent:  null,
-      placeholderEl:        null,
-      mousePosInElX:        0,
-      mousePosInElY:        0,
-      hovered:              false,
+      internalConfig:         {},
+      targetEl:               null,
+      parentLayoutComponent:  null,
+      prevParentId:           null,
+      lastLayoutEl:           null,
+      lastLayoutComponent:    null,
+      placeholderEl:          null,
+      mousePosInElX:          0,
+      mousePosInElY:          0,
+      hovered:                false,
     }
+  },
+  created() {
+    this.internalConfig = this.config
+    this.parentLayoutComponent = this.$parent.$parent.$parent
   },
   computed: {
     style() {
-      if (!this.display) return {}
+      if (!this.internalConfig || !this.internalConfig.internalDisplay) return {}
+
+      const {
+        marginTop,
+        marginLeft,
+      } = this.internalConfig.internalDisplay
+
+      if (!this.display) return {
+        marginTop,
+        marginLeft,
+      }
 
       const {
         weight: flexGrow,
-        marginTop,
-        marginLeft,
       } = this.display
 
       return {
@@ -82,7 +99,6 @@ export default {
       $placeholderText.style.marginBottom = '0px'
       $placeholderText.innerText = 'Drop here!'
 
-      const $cellChild = targetEl.children[0].cloneNode(false)
       const $placeholderChild = document.createElement('div')
       $placeholderChild.prepend($placeholderText)
       $placeholderChild.style.height = `${targetEl.clientHeight}px`
@@ -104,6 +120,7 @@ export default {
     onDragStart(event) {
       if (!this.editable) return
       this.targetEl = event.target
+      this.prevParentId = UiUtils.getParentId(event.target)
 
       this.setMousePositionInDraggedElement(event)
 
@@ -122,7 +139,10 @@ export default {
       let layoutComponent
       while ($currEl) {
         if ($currEl.__vue__) {
-          layoutComponent = $currEl.__vue__
+          if ($currEl.__vue__.$options.name === 'Cell')
+            layoutComponent = $currEl.__vue__.$parent
+          else
+            layoutComponent = $currEl.__vue__
           $currEl = null
         } else {
           $currEl = $layoutEl.parentNode
@@ -233,10 +253,22 @@ export default {
     
       this.appendPlaceholderToDOM($siblings, startX, startY)
     },
-    onDragEnd(event) {
+    onDragEnd() {
       if (!this.editable) return
       const CELL_PLACEHOLDER_CLASS = '.Layout_Cell--placeholder';
-      const { targetEl, placeholderEl } = this;
+      const { targetEl, lastLayoutEl, prevParentId } = this;
+
+      const cellId = targetEl.id
+
+      UiUtils.moveCellToPlaceholderPosition(cellId, lastLayoutEl, targetEl.parentNode)
+
+      const parentId = UiUtils.getParentId(targetEl)
+      const prevSiblingId = UiUtils.getPrevSiblingId(targetEl)
+
+      const { newPrevParentLayoutJson, newNextParentLayoutJson } = LayoutUtils.moveElementToNewPosition(this.parentLayoutComponent.config, this.lastLayoutComponent.config, UiUtils.extractCellId(cellId), parentId, prevParentId, prevSiblingId)
+
+      this.parentLayoutComponent.configUpdate(newPrevParentLayoutJson)
+      if (newNextParentLayoutJson) this.lastLayoutComponent.configUpdate(newNextParentLayoutJson);
 
       [...document.querySelectorAll(CELL_PLACEHOLDER_CLASS)].forEach(el => el.remove())
       if (targetEl) targetEl.style.display = 'block'

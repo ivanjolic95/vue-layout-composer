@@ -1,36 +1,40 @@
 <template>
-  <div class="Layout"
-    :class="classes"
-    @mousemove="hovered = true"
-    @mouseout="hovered = false"
+  <Cell
+    :display="config.display"
+    :id="config.id"
+    :config="config"
+    :editable="internalEditable"
   >
-    <div
-      class="Layout__move"
-      v-if="config.id !== 0 && editable"
-      @mouseenter.stop="moveHovered = true"
-      @mouseleave.stop="moveHovered = false"
+    <div class="Layout"
+      :class="classes"
+      @mousemove="hovered = true"
+      @mouseout="hovered = false"
     >
-      <font-awesome-icon icon="arrows-alt" />
-      <span v-if="hovered || moveHovered">Move Layout</span>
-    </div>
-    <Cell
-      :display="child.display"
-      v-for="child in children"
-      :id="child.id"
-      :key="child.id"
-      :editable="editable"
-    >
+      <div
+        class="Layout__move"
+        v-if="config.id !== 0 && internalEditable"
+        @mouseenter.stop="moveHovered = true"
+        @mouseleave.stop="moveHovered = false"
+      >
+        <font-awesome-icon icon="arrows-alt" />
+        <span v-if="hovered || moveHovered">Move Layout</span>
+      </div>
+
       <component
+        v-for="child in children"
         v-bind="child.props"
         :id="child.id"
-        :config="child"
+        :key="child.id"
         :editable="editable"
+        :initialConfig="child"
         :is="getComponentName(child)" />
-    </Cell>
-  </div>
+    </div>
+  </Cell>
 </template>
 
 <script>
+import _ from 'lodash'
+
 import Cell from './components/Cell'
 
 export default {
@@ -39,12 +43,13 @@ export default {
     Cell,
   },
   props: {
-    config:             Object,
+    initialConfig:      Object,
     displayComponents:  Object,
     editable:           Boolean,
   },
   data() {
     return {
+      config:       _.cloneDeep(this.initialConfig),
       moveHovered:  false,
       hovered:      false,
     }
@@ -56,23 +61,48 @@ export default {
     )
   },
   computed: {
+    internalEditable() {
+      if (this.initialConfig.id === 0) return false;
+      return this.editable
+    },
     classes() {
-      if (!this.config) return ''
-      const { id, props: { orientation } } = this.config
-      const { editable, hovered, moveHovered } = this
+      if (!this.initialConfig) return ''
+      const { id, props: { orientation } } = this.initialConfig
+      const { internalEditable, hovered, moveHovered } = this
 
       return {
-        'Layout--move-hovered': id !== 0 && editable && (hovered || moveHovered),
+        'Layout--move-hovered': id !== 0 && internalEditable && (hovered || moveHovered),
         'Layout--horizontal':   orientation === 'horizontal',
         'Layout--vertical':     orientation === 'vertical',
       }
     },
     children() {
       return this.config.children || []
-    }
+    },
   },
   methods: {
+    configUpdate(newConfig) {
+      this.config = newConfig
+    },
+    getConfig() {
+      return {
+        component: 'Layout',
+        props: this.config.props,
+        children: this.getChildrenConfigurations(),
+      }
+    },
+    getChildrenConfigurations() {
+      return this.config.children.map(child => {
+        const res = _.cloneDeep(this.$children[0].$children.find(childComponent => childComponent.config.id === child.id).getConfig())
+        
+        delete(res.id)
+        delete(res.internalDisplay)
+        
+        return res
+      })
+    },
     getComponentName(config) {
+      if (!config) return null
       if (config.component.indexOf('Layout') === -1)
         return this.$layoutComposer.getComponentName(config.component)
       else

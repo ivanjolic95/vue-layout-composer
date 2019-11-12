@@ -18,7 +18,8 @@
           "props": {
             "background": "#E6E7E8",
             "content": "This"
-          }
+          },
+          "hello": "world"
         },
         {
           "component": "Item",
@@ -28,7 +29,38 @@
           "props": {
             "background": "#E6E7E8",
             "content": "is"
-          }
+          },
+          "hello": "world"
+        },
+        {
+          "component": "Layout",
+          "props": {
+            "orientation": "vertical"
+          },
+          "children": [
+            {
+              "component": "Item",
+              "display": {
+                "weight": 1
+              },
+              "props": {
+                "background": "#E6E7E8",
+                "content": "and"
+              },
+              "hello": "world"
+            },
+            {
+              "component": "Item",
+              "display": {
+                "weight": 1
+              },
+              "props": {
+                "background": "#E6E7E8",
+                "content": "vertical."
+              },
+              "hello": "world"
+            }
+          ]
         },
         {
           "component": "Item",
@@ -38,7 +70,8 @@
           "props": {
             "background": "#E6E7E8",
             "content": "horizontal."
-          }
+          },
+          "hello": "world"
         }
       ]
     },
@@ -47,21 +80,19 @@
       "props": {
         "background": "#E6E7E8",
         "content": "This"
-      }
+      },
+      "hello": "world"
     },
     {
       "component": "Item",
+      "display": {
+        "weight": 1
+      },
       "props": {
         "background": "#E6E7E8",
-        "content": "is"
-      }
-    },
-    {
-      "component": "Item",
-      "props": {
-        "background": "#E6E7E8",
-        "content": "vertical."
-      }
+        "content": "horizontal."
+      },
+      "hello": "world"
     },
     {
       "component": "Layout",
@@ -77,7 +108,8 @@
           "props": {
             "background": "#E6E7E8",
             "content": "This"
-          }
+          },
+          "hello": "world"
         },
         {
           "component": "Item",
@@ -87,50 +119,26 @@
           "props": {
             "background": "#E6E7E8",
             "content": "is"
-          }
-        },
-        {
-          "component": "Item",
-          "display": {
-            "weight": 1
           },
-          "props": {
-            "background": "#E6E7E8",
-            "content": "horizontal."
-          }
-        },
-        {
-          "component": "Layout",
-          "display": {
-            "weight": 1
-          },
-          "props": {
-            "orientation": "vertical"
-          },
-          "children": [
-            {
-              "component": "Item",
-              "display": {
-                "weight": 1
-              },
-              "props": {
-                "background": "#E6E7E8",
-                "content": "and"
-              }
-            },
-            {
-              "component": "Item",
-              "display": {
-                "weight": 1
-              },
-              "props": {
-                "background": "#E6E7E8",
-                "content": "vertical."
-              }
-            }
-          ]
+          "hello": "world"
         }
       ]
+    },
+    {
+      "component": "Item",
+      "props": {
+        "background": "#E6E7E8",
+        "content": "is"
+      },
+      "hello": "world"
+    },
+    {
+      "component": "Item",
+      "props": {
+        "background": "#E6E7E8",
+        "content": "vertical."
+      },
+      "hello": "world"
     }
   ]
 }

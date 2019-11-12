@@ -5,7 +5,7 @@
         <a
           href="#"
           class="LayoutComposer__ActionButton"
-          @click.prevent="internalEditable = !internalEditable"
+          @click.prevent="internalEditable = !internalEditable; buildConfig()"
         >
           Lock
         </a>
@@ -26,7 +26,7 @@
 
     <Layout
       :displayComponents="displayComponents"
-      :config="internalConfig"
+      :initialConfig="internalConfig"
       :id="internalConfig.id"
       v-bind="internalConfig.props"
       :editable="internalEditable"
@@ -83,19 +83,8 @@ export default {
       event.preventDefault()
     })
 
-    document.addEventListener('drop', (event) => {
+    document.addEventListener('drop', () => {
       if (!this.internalEditable) return false
- 
-      const cellId = event.dataTransfer.getData("text")
-
-      UiUtils.moveCellToPlaceholderPosition(cellId)
-
-      setTimeout(() => {
-        const parentId = UiUtils.getParentId(cellId)
-        const prevSiblingId = UiUtils.getPrevSiblingId(cellId)
-
-        this.internalConfig = LayoutUtils.moveElementToNewPosition(this.internalConfig, UiUtils.extractCellId(cellId), parentId, prevSiblingId)
-      }, 100)
     })
 
     window.documentHasDropListener = true
@@ -126,6 +115,12 @@ export default {
       return !this.isEditorShown ? 'Show Editor' : 'Hide Editor'
     }
   },
+  methods: {
+    buildConfig() {
+      console.log(JSON.stringify(this.$children[0].getConfig(), null, 2))
+      return this.$children[0].getConfig()
+    }
+  }
 }
 </script>
 

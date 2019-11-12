@@ -1,6 +1,6 @@
 const PLACEHOLDER_CLASS = '.Layout_Cell--placeholder'
 
-const extractCellId = (htmlId) => htmlId && parseInt(htmlId.slice(5), 10)
+const extractCellId = (htmlId) => htmlId && parseInt(htmlId, 10)
 
 const showElement = ($el) => {
   $el.style.display = 'block'
@@ -16,12 +16,12 @@ const resetLayoutsStyle = () => {
   })
 }
 
-const moveCellToPlaceholderPosition = (cellId) => {
-  const $placeholder = document.querySelector(PLACEHOLDER_CLASS)
+const moveCellToPlaceholderPosition = (cellId, newRoot = document, prevRoot = document) => {
+  const $placeholder = newRoot.querySelector(PLACEHOLDER_CLASS)
 
   if (!$placeholder) return
   
-  const $cell = document.getElementById(cellId)
+  const $cell = prevRoot.querySelector(`[id='${cellId}']`)
 
   $cell.style.marginTop = $placeholder.style.marginTop
   $cell.style.marginLeft = $placeholder.style.marginLeft
@@ -31,16 +31,12 @@ const moveCellToPlaceholderPosition = (cellId) => {
   $placeholder.parentNode.insertBefore($cell, $placeholder.nextSibling)
 }
 
-const getParentId = (cellId) => {
-  const $cell = document.getElementById(cellId)
-
-  return parseInt($cell.parentElement.id, 10)
+const getParentId = ($cell) => {
+  return parseInt($cell.parentElement.parentElement.id, 10)
 }
 
-const getPrevSiblingId = (cellId) => {
-  const $cell = document.getElementById(cellId)
-
-  return $cell.previousElementSibling && parseInt($cell.previousSibling.id.slice(5), 10)
+const getPrevSiblingId = ($cell) => {
+  return $cell.previousSibling.previousSibling && parseInt($cell.previousSibling.previousSibling.id, 10)
 }
 
 export default {
