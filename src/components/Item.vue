@@ -4,7 +4,7 @@
     :display="config.display"
     :id="config.id"
     :config="config"
-    editable
+    :editable="editable"
   >
     <div class="Item" :style="style" @click="onClick">
       {{ content }}
@@ -24,6 +24,7 @@ export default {
     initialConfig:  Object,
     content:        String,
     background:     String,
+    editable:       Boolean,
   },
   data() {
     return {
