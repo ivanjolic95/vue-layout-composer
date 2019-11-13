@@ -5,6 +5,7 @@
     :config="config"
     :editable="internalEditable"
     :key="config.id"
+    :dragging="dragging"
   >
     <div class="Layout"
       :class="classes"
@@ -28,13 +29,17 @@
         :key="child.id"
         :editable="editable"
         :initialConfig="child"
-        :is="getComponentName(child)" />
+        :is="getComponentName(child)"
+        :dragging="dragging"
+        @delete:content="deleteChild(child.id)" />
     </div>
   </Cell>
 </template>
 
 <script>
 import _ from 'lodash'
+
+import LayoutUtils from '../../utils/layout'
 
 import Cell from './components/Cell'
 
@@ -47,6 +52,7 @@ export default {
     initialConfig:      Object,
     displayComponents:  Object,
     editable:           Boolean,
+    dragging:           Boolean,
   },
   data() {
     return {
@@ -56,6 +62,8 @@ export default {
     }
   },
   created() {
+    window.addEventListener("resize", this.onWindowResize);
+    this.onWindowResize(1)
     if (!this.displayComponents) return
     Object.keys(this.displayComponents).forEach(name =>
       this.$layoutComposer.registerComponent(name, this.displayComponents[name])
@@ -63,12 +71,12 @@ export default {
   },
   computed: {
     internalEditable() {
-      if (this.initialConfig.id === 0) return false;
+      if (this.config.id === 0) return false;
       return this.editable
     },
     classes() {
-      if (!this.initialConfig) return ''
-      const { id, props: { orientation } } = this.initialConfig
+      if (!this.config) return ''
+      const { id, props: { orientation } } = this.config
       const { internalEditable, hovered, moveHovered } = this
 
       return {
@@ -108,6 +116,17 @@ export default {
         return this.$layoutComposer.getComponentName(config.component)
       else
         return config.component
+    },
+    onWindowResize() {
+      if (window.innerWidth >= 600) {
+        this.config.props.orientation = this.initialConfig.props.orientation
+      } else {
+        this.config.props.orientation = 'vertical'
+      }
+      LayoutUtils.addMargins(this.config)
+    },
+    deleteChild(childId) {
+      LayoutUtils.removeCell(this.config, childId)
     },
   }
 }

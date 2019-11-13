@@ -11,6 +11,10 @@
     @drag="onDrag($event)"
     @dragend.stop="onDragEnd($event)"
   >
+    <div v-if="editable && $parent.$options.name !== 'Layout'" class="Layout_Cell__actions">
+      <span @click="$emit('edit:content')">Edit</span>
+      <span @click="$emit('delete:content')">Delete</span>
+    </div>
     <!-- <span class="Layout_Cell__id" v-if="editable">{{id}}</span> -->
     <slot />
   </div>
@@ -27,6 +31,7 @@ export default {
     display:  Object,
     editable: Boolean,
     config:   Object,
+    dragging: Boolean,
   },
   data() {
     return {
@@ -71,10 +76,11 @@ export default {
       }
     },
     classes() {
-      const { hovered, editable } = this
+      const { hovered, editable, dragging } = this
 
       return {
         'Layout_Cell--hovered': hovered && editable,
+        'Layout_Cell--dragging': dragging,
       }
     }
   },
@@ -283,6 +289,12 @@ export default {
   flex-grow: 1;
   margin: 0;
   flex-basis: 0;
+  box-sizing: border-box;
+}
+
+.Layout_Cell--dragging {
+  border: 1px solid #e3e3e3;
+  padding: 10px;
 }
 
 .Layout_Cell--hovered {
@@ -302,4 +314,19 @@ export default {
     left: 2px;
     font-size: 10px;
   }
+
+  .Layout_Cell__actions {
+    position: absolute;
+    font-size: 10px;
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+    .Layout_Cell__actions span {
+      position: relative;
+      display: block;
+      margin: 2px 5px;
+      cursor: pointer;
+    }
 </style>

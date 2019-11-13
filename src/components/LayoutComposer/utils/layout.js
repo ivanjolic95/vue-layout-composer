@@ -163,4 +163,5 @@ export default {
   addIds,
   removeIds,
   addMargins,
+  removeCell,
 }

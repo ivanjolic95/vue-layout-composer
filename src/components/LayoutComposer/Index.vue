@@ -30,6 +30,7 @@
       :id="internalConfig.id"
       v-bind="internalConfig.props"
       :editable="internalEditable"
+      :dragging="dragging"
     />
   </div>
 </template>
@@ -78,6 +79,16 @@ export default {
   mounted() {
     if (window.documentHasDropListener) return
 
+    document.addEventListener('dragstart', (event) => {
+      setTimeout(() => {
+        this.dragging = true
+      }, 10)
+    })
+
+    document.addEventListener('drop', (event) => {
+      this.dragging = false
+    })
+
     document.addEventListener('dragover', (event) => {
       if (!this.internalEditable) return true
       event.preventDefault()
@@ -91,6 +102,7 @@ export default {
   },
   data() {
     return {
+      dragging:         false,
       internalConfig:   {},
       internalEditable: this.editable,
       isEditorShown:    false,

@@ -5,6 +5,7 @@
     :id="config.id"
     :config="config"
     :editable="editable"
+    @delete:content="$emit('delete:content')"
   >
     <div class="Item" :style="style" @click="onClick">
       {{ content }}
