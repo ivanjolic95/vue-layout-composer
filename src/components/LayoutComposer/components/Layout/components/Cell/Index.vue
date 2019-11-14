@@ -12,8 +12,8 @@
     @dragend.stop="onDragEnd($event)"
   >
     <div v-if="editable && $parent.$options.name !== 'Layout'" class="Layout_Cell__actions">
-      <span @click="$emit('edit:content')">Edit</span>
-      <span @click="$emit('delete:content')">Delete</span>
+      <span class="Layout_Cell__edit" @click="$emit('edit:content')"><font-awesome-icon icon="edit" /></span>
+      <span class="Layout_Cell__delete" @click="$emit('delete:content')"><font-awesome-icon icon="trash" /></span>
     </div>
     <!-- <span class="Layout_Cell__id" v-if="editable">{{id}}</span> -->
     <slot />
@@ -328,5 +328,14 @@ export default {
       display: block;
       margin: 2px 5px;
       cursor: pointer;
+      font-size: 12px;
     }
+
+      .Layout_Cell__edit {
+        color: #909090;
+      }
+
+      .Layout_Cell__delete {
+        color: #b38484;
+      }
 </style>

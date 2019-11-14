@@ -4,11 +4,13 @@ import LayoutComposer from './components/LayoutComposer'
 import Layout from './components/LayoutComposer/components/Layout'
 import Cell from './components/LayoutComposer/components/Layout/components/Cell'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons'
+import { faArrowsAlt, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import ComponentRegister from './plugins/ComponentRegister'
 
 library.add(faArrowsAlt)
+library.add(faEdit)
+library.add(faTrash)
 
 const components = {
   FontAwesomeIcon,
