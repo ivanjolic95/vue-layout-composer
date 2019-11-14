@@ -1,27 +1,26 @@
 <template>
   <div class="LayoutComposer">
-    <template v-if="internalEditable">
+    <template v-if="!internalEditable">
+      <div class="LayoutComposer__Actions">
+        <a
+          href="#"
+          class="LayoutComposer__ActionButton"
+          @click.prevent="internalEditable = !internalEditable;"
+        >
+          Edit
+        </a>
+      </div>
+    </template>
+    <template v-else>
       <div class="LayoutComposer__Actions">
         <a
           href="#"
           class="LayoutComposer__ActionButton"
           @click.prevent="internalEditable = !internalEditable; buildConfig()"
         >
-          Lock
-        </a>
-        <a
-          href="#"
-          class="LayoutComposer__ActionButton"
-          @click.prevent="isEditorShown = !isEditorShown"
-        >
-          {{editorButtonText}}
+          Save
         </a>
       </div>
-      <textarea
-        v-if="isEditorShown"
-        v-model="configHumanized"
-        class="LayoutComposer__Editor"
-      ></textarea>
     </template>
 
     <Layout
@@ -55,9 +54,6 @@ export default {
     editable:           Boolean,
   },
   watch: {
-    internalEditable() {
-      this.isEditorShown = false
-    },
     internalConfig() {
       const internalConfigNoIds = _.cloneDeep(this.internalConfig)
       LayoutUtils.removeIds(internalConfigNoIds)
@@ -105,7 +101,6 @@ export default {
       dragging:         false,
       internalConfig:   {},
       internalEditable: this.editable,
-      isEditorShown:    false,
     }
   },
   computed: {
@@ -123,9 +118,6 @@ export default {
         } catch(e) {}
       },
     },
-    editorButtonText() {
-      return !this.isEditorShown ? 'Show Editor' : 'Hide Editor'
-    }
   },
   methods: {
     buildConfig() {
@@ -146,20 +138,23 @@ export default {
   .LayoutComposer__Actions {
     display: flex;
     width: 100%;
-    justify-content: flex-end;
+    justify-content: center;
+    border-bottom: 1px solid #e3e3e3;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
   }
 
   .LayoutComposer__ActionButton {
     align-self: flex-end;
-    margin: 4px;
-    padding: 10px 20px;
+    margin: 10px;
     text-decoration: none;
-    color: #284664;
-    background: #E6E7E8;
-  }
-
-  .LayoutComposer__Editor {
-    width: 100%;
-    height: 400px;
+    color: #007bff;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid #007bff;
+    padding: .5rem .75rem;
+    font-size: 1rem;
+    line-height: 1.25;
+    border-radius: .25rem;
   }
 </style>
