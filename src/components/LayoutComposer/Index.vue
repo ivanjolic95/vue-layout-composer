@@ -57,10 +57,6 @@ export default {
     internalConfig() {
       const internalConfigNoIds = _.cloneDeep(this.internalConfig)
       LayoutUtils.removeIds(internalConfigNoIds)
-
-      this.$emit('change:config', {
-        config: internalConfigNoIds,
-      })
     },
     config() {
       this.internalConfig = _.cloneDeep(this.config)
@@ -121,9 +117,8 @@ export default {
   },
   methods: {
     buildConfig() {
-      console.log(JSON.stringify(this.$children[0].getConfig(), null, 2))
-      return this.$children[0].getConfig()
-    }
+      this.$emit('change:config', this.$children[0].getConfig())
+    },
   }
 }
 </script>

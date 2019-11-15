@@ -299,7 +299,7 @@ export default {
 
 .Layout_Cell--hovered {
   cursor: grab;
-  background: #ccc;
+  background: #eeeeee;
   opacity: 0.5;
 }
 

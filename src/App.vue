@@ -3,7 +3,7 @@
     <layout-composer
       :displayComponents="displayComponents"
       :config="config"
-      @change:config="onConfigChange($event)"
+      @change:config="onConfigChange"
       editable
     />
   </div>
@@ -29,8 +29,8 @@ export default {
     }
   },
   methods: {
-    onConfigChange(event) {
-      console.log(event)
+    onConfigChange(newConfig) {
+      console.log(newConfig)
     },
   },
 }
