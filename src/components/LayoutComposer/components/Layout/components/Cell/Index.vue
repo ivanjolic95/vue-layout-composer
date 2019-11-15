@@ -50,6 +50,10 @@ export default {
   created() {
     this.internalConfig = this.config
     this.parentLayoutComponent = this.$parent.$parent.$parent
+
+    document.addEventListener('dragover', (event) => {
+      if (/firefox/i.test(navigator.userAgent)) this.onDrag(event)
+    })
   },
   computed: {
     style() {
@@ -161,7 +165,7 @@ export default {
     getSiblingsFromLayout() {
       const { targetEl, lastLayoutEl } = this
       return lastLayoutEl && [ ...lastLayoutEl.children ].filter($el => {
-        return $el.__vue__ && $el.__vue__.id !== targetEl.__vue__.id
+        return $el.__vue__ && (!targetEl || $el.__vue__.id !== targetEl.__vue__.id)
       }) || []
     },
     appendPlaceholderToDOM($siblings, startX, startY) {
@@ -173,6 +177,8 @@ export default {
         lastLayoutComponent,
         lastLayoutEl,
       } = this
+
+      if (!placeholderEl) return
 
       let minDistance = BIG_NUMBER
       let $childBeforeEl = null
@@ -260,6 +266,7 @@ export default {
       this.appendPlaceholderToDOM($siblings, startX, startY)
     },
     onDragEnd() {
+      console.log('drag end')
       if (!this.editable) return
       const CELL_PLACEHOLDER_CLASS = '.Layout_Cell--placeholder';
       const { targetEl, lastLayoutEl, prevParentId } = this;

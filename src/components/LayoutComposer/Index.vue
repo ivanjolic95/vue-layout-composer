@@ -77,10 +77,6 @@ export default {
       }, 10)
     })
 
-    document.addEventListener('drop', (event) => {
-      this.dragging = false
-    })
-
     document.addEventListener('dragover', (event) => {
       if (!this.internalEditable) return true
       event.preventDefault()
@@ -88,6 +84,7 @@ export default {
 
     document.addEventListener('drop', () => {
       if (!this.internalEditable) return false
+      this.dragging = false
     })
 
     window.documentHasDropListener = true

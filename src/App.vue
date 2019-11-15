@@ -4,7 +4,6 @@
       :displayComponents="displayComponents"
       :config="config"
       @change:config="onConfigChange"
-      editable
     />
   </div>
 </template>
