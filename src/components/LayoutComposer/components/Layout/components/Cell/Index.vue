@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="cell"
     class="Layout_Cell"
     :class="classes"
     :style="style"
@@ -7,9 +8,9 @@
     @mousemove.stop="hovered = true"
     @mouseout="hovered = false"
     :draggable="editable"
-    @dragstart="onDragStart($event)"
-    @drag="onDrag($event)"
-    @dragend.stop="onDragEnd($event)"
+    @drag="$emit('internal:drag', $event)"
+    @dragstart="$emit('internal:dragstart', $event)"
+    @dragend.stop="$emit('internal:dragend', $event)"
   >
     <div v-if="editable && $parent.$options.name !== 'Layout'" class="Layout_Cell__actions">
       <span class="Layout_Cell__edit" @click="$emit('edit:content')"><font-awesome-icon icon="edit" /></span>
@@ -21,6 +22,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
 import UiUtils from '../../../../utils/ui'
 import LayoutUtils from '../../../../utils/layout'
 
@@ -51,9 +54,20 @@ export default {
     this.internalConfig = this.config
     this.parentLayoutComponent = this.$parent.$parent.$parent
 
-    document.addEventListener('dragover', (event) => {
-      if (/firefox/i.test(navigator.userAgent)) this.onDrag(event)
-    })
+    if (/firefox/i.test(navigator.userAgent)) {
+      document.addEventListener('dragover', (event) => {
+        this.onDrag(event)
+      })
+      this.$on('internal:dragend', () => {
+        setTimeout(() => {
+          this.onDragEnd()
+        }, 10)
+      })
+    } else {
+      this.$on('internal:dragend', this.onDragEnd.bind(this))
+      this.$on('internal:drag', this.onDrag)
+    }
+    this.$on('internal:dragstart', this.onDragStart)
   },
   computed: {
     style() {
@@ -128,6 +142,7 @@ export default {
       this.placeholderEl = $placeholderEl
     },
     onDragStart(event) {
+      window.isDragging = true
       if (!this.editable) return
       this.targetEl = event.target
       this.prevParentId = UiUtils.getParentId(event.target)
@@ -142,7 +157,7 @@ export default {
       const LAYOUT_CLASS = 'Layout'
       return document
         .elementsFromPoint(startX, startY)
-        .find(el => el.className && el.className.indexOf(`${LAYOUT_CLASS} `) !== -1)
+        .find(el => el.className && (typeof el.className.indexOf === 'function') && el.className.indexOf(`${LAYOUT_CLASS} `) !== -1)
     },
     setLayoutComponent($layoutEl) {
       let $currEl = $layoutEl
@@ -155,7 +170,7 @@ export default {
             layoutComponent = $currEl.__vue__
           $currEl = null
         } else {
-          $currEl = $layoutEl.parentNode
+          $currEl = $currEl.parentNode
         }
       }
 
@@ -266,25 +281,29 @@ export default {
       this.appendPlaceholderToDOM($siblings, startX, startY)
     },
     onDragEnd() {
-      console.log('drag end')
-      if (!this.editable) return
+      if (!this.editable || !window.isDragging) return true
+      window.isDragging = false
       const CELL_PLACEHOLDER_CLASS = '.Layout_Cell--placeholder';
       const { targetEl, lastLayoutEl, prevParentId } = this;
 
+      if (!targetEl || !targetEl.parentElement) return true
+
       const cellId = targetEl.id
 
-      UiUtils.moveCellToPlaceholderPosition(cellId, lastLayoutEl, targetEl.parentNode)
+      UiUtils.moveCellToPlaceholderPosition(cellId, lastLayoutEl, targetEl.parentElement)
 
-      const parentId = UiUtils.getParentId(targetEl)
+      const parentId = UiUtils.getParentId(targetEl) // BUG!!!!!!!!
       const prevSiblingId = UiUtils.getPrevSiblingId(targetEl)
 
-      const { newPrevParentLayoutJson, newNextParentLayoutJson } = LayoutUtils.moveElementToNewPosition(this.parentLayoutComponent.config, this.lastLayoutComponent.config, UiUtils.extractCellId(cellId), parentId, prevParentId, prevSiblingId)
+      const { newPrevParentLayoutJson, newNextParentLayoutJson } = LayoutUtils.moveElementToNewPosition(targetEl.__vue__.$parent.getConfig(), this.parentLayoutComponent.config, this.lastLayoutComponent.config, UiUtils.extractCellId(cellId), parentId, prevParentId, prevSiblingId)
 
       this.parentLayoutComponent.configUpdate(newPrevParentLayoutJson)
-      if (newNextParentLayoutJson) this.lastLayoutComponent.configUpdate(newNextParentLayoutJson);
+      if (newNextParentLayoutJson) this.lastLayoutComponent.configUpdate(newNextParentLayoutJson)
 
-      [...document.querySelectorAll(CELL_PLACEHOLDER_CLASS)].forEach(el => el.remove())
+      ;[...document.querySelectorAll(CELL_PLACEHOLDER_CLASS)].forEach(el => el.remove())
       if (targetEl) targetEl.style.display = 'block'
+
+      return false
     }
   }
 }

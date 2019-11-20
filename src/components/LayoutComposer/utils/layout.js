@@ -128,31 +128,31 @@ const addCell = (config, cell, parentId, prevSiblingId) => {
   }
 }
 
-const moveElementToNewLayout = (prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevSiblingId) => {
+const moveElementToNewLayout = (cellConfig, prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevSiblingId) => {
   const newPrevParentLayoutJson = _.cloneDeep(prevParentLayoutJson)
   const newNextParentLayoutJson = _.cloneDeep(nextParentLayoutJson)
-  const cellConfig = removeCell(newPrevParentLayoutJson, cellId)
+  removeCell(newPrevParentLayoutJson, cellId)
   addCell(newNextParentLayoutJson, cellConfig, parentId, prevSiblingId)
   addMargins(newPrevParentLayoutJson)
   addMargins(newNextParentLayoutJson)
   return { newPrevParentLayoutJson, newNextParentLayoutJson }
 }
 
-const moveElementToNewPositionInLayout = (prevParentLayoutJson, cellId, parentId, prevSiblingId) => {
+const moveElementToNewPositionInLayout = (cellConfig, prevParentLayoutJson, cellId, parentId, prevSiblingId) => {
   const newPrevParentLayoutJson = _.cloneDeep(prevParentLayoutJson)
-  const cellConfig = removeCell(newPrevParentLayoutJson, cellId)
+  removeCell(newPrevParentLayoutJson, cellId)
   addCell(newPrevParentLayoutJson, cellConfig, parentId, prevSiblingId)
   addMargins(newPrevParentLayoutJson)
   return { newPrevParentLayoutJson, newNextParentLayoutJson: null }
 }
 
-const moveElementToNewPosition = (prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevParentId, prevSiblingId) => {
+const moveElementToNewPosition = (cellConfig, prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevParentId, prevSiblingId) => {
   let newPrevParentLayoutJson, newNextParentLayoutJson
   
   if (parentId !== prevParentId) {
-    ({ newPrevParentLayoutJson, newNextParentLayoutJson } = moveElementToNewLayout(prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevSiblingId))
+    ({ newPrevParentLayoutJson, newNextParentLayoutJson } = moveElementToNewLayout(cellConfig, prevParentLayoutJson, nextParentLayoutJson, cellId, parentId, prevSiblingId))
   } else {
-    ({ newPrevParentLayoutJson, newNextParentLayoutJson } = moveElementToNewPositionInLayout(prevParentLayoutJson, cellId, parentId, prevSiblingId))
+    ({ newPrevParentLayoutJson, newNextParentLayoutJson } = moveElementToNewPositionInLayout(cellConfig, prevParentLayoutJson, cellId, parentId, prevSiblingId))
   }
 
   return { newPrevParentLayoutJson, newNextParentLayoutJson }

@@ -74,7 +74,7 @@ export default {
     document.addEventListener('dragstart', (event) => {
       setTimeout(() => {
         this.dragging = true
-      }, 10)
+      }, 100)
     })
 
     document.addEventListener('dragover', (event) => {
@@ -84,7 +84,9 @@ export default {
 
     document.addEventListener('drop', () => {
       if (!this.internalEditable) return false
-      this.dragging = false
+      setTimeout(() => {
+        this.dragging = false
+      }, 100)
     })
 
     window.documentHasDropListener = true

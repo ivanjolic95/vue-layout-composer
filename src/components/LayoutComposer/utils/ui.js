@@ -23,6 +23,8 @@ const moveCellToPlaceholderPosition = (cellId, newRoot = document, prevRoot = do
   
   const $cell = prevRoot.querySelector(`[id='${cellId}']`)
 
+  if (!$cell) return
+
   $cell.style.marginTop = $placeholder.style.marginTop
   $cell.style.marginLeft = $placeholder.style.marginLeft
 

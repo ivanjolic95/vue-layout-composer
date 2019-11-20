@@ -95,19 +95,13 @@ export default {
     },
     getConfig() {
       return {
-        component: 'Layout',
-        props: this.config.props,
+        ...this.config,
         children: this.getChildrenConfigurations(),
       }
     },
     getChildrenConfigurations() {
       return this.config.children.map(child => {
-        const res = _.cloneDeep(this.$children[0].$children.find(childComponent => childComponent.config.id === child.id).getConfig())
-        
-        delete(res.id)
-        delete(res.internalDisplay)
-        
-        return res
+        return _.cloneDeep(this.$children[0].$children.find(childComponent => childComponent.config.id === child.id).getConfig())
       })
     },
     getComponentName(config) {
