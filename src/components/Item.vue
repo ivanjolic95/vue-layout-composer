@@ -5,6 +5,8 @@
     :id="config.id"
     :config="config"
     :editable="editable"
+    :layout-orientation="layoutOrientation"
+    :is-first-child="isFirstChild"
     @delete:content="$emit('delete:content')"
   >
     <div class="Item" :style="style" @click="onClick">
@@ -22,23 +24,20 @@ export default {
     Cell,
   },
   props: {
-    initialConfig:  Object,
-    content:        String,
-    background:     String,
-    editable:       Boolean,
-  },
-  data() {
-    return {
-      config: {},
-    }
-  },
-  created() {
-    this.config = {
-      ...this.initialConfig,
-      hello: 'world'
-    }
+    initialConfig:      Object,
+    content:            String,
+    background:         String,
+    editable:           Boolean,
+    layoutOrientation:  String,
+    isFirstChild:       Boolean,
   },
   computed: {
+    config() {
+      return {
+        ...this.initialConfig,
+        hello: 'world'
+      }
+    },
     style() {
       const { background } = this
 

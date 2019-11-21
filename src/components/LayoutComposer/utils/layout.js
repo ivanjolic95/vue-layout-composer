@@ -30,6 +30,46 @@ const removeIds = (jsonConfig) => {
   return _removeIds(jsonConfig)
 }
 
+const shallowAddMargins = (config) => {
+  if (config.props && config.props.orientation === 'horizontal') {
+    config.children = [
+      {
+        ...config.children[0],
+        internalDisplay: {
+          marginTop: null,
+          marginLeft: null,
+        },
+      },
+      ...config.children.slice(1).map(child => ({
+        ...child,
+        internalDisplay: {
+          marginLeft: '8px',
+          marginTop: null,
+        },
+      })),
+    ]
+  }
+
+  if (config.props && config.props.orientation === 'vertical') {
+    config.children = [
+      {
+        ...config.children[0],
+        internalDisplay: {
+          marginTop: null,
+          marginLeft: null,
+        },
+      },
+      ...config.children.slice(1).map(child => ({
+        ...child,
+        internalDisplay: {
+          marginLeft: null,
+          marginTop: '8px',
+        },
+      })),
+    ]
+  }
+}
+
 const addMargins = (jsonConfig) => {
   function _addMargins(config) {
     if (!config) return
@@ -162,6 +202,7 @@ export default {
   moveElementToNewPosition,
   addIds,
   removeIds,
+  shallowAddMargins,
   addMargins,
   removeCell,
 }

@@ -6,6 +6,8 @@
     :editable="internalEditable"
     :key="config.id"
     :dragging="dragging"
+    :layout-orientation="layoutOrientation"
+    :is-first-child="isFirstChild"
   >
     <div class="Layout"
       :class="classes"
@@ -31,6 +33,8 @@
         :initialConfig="child"
         :is="getComponentName(child)"
         :dragging="dragging"
+        :layout-orientation="config.props.orientation"
+        :is-first-child="children[0].id === child.id"
         @delete:content="deleteChild(child.id)" />
     </div>
   </Cell>
@@ -53,6 +57,8 @@ export default {
     displayComponents:  Object,
     editable:           Boolean,
     dragging:           Boolean,
+    layoutOrientation:  String,
+    isFirstChild:       Boolean,
   },
   data() {
     return {
@@ -62,8 +68,8 @@ export default {
     }
   },
   created() {
-    window.addEventListener("resize", this.onWindowResize);
-    this.onWindowResize(1)
+    window.addEventListener('resize', this.configureForMobile)
+    this.configureForMobile()
     if (!this.displayComponents) return
     Object.keys(this.displayComponents).forEach(name =>
       this.$layoutComposer.registerComponent(name, this.displayComponents[name])
@@ -111,13 +117,12 @@ export default {
       else
         return config.component
     },
-    onWindowResize() {
+    configureForMobile() {
       if (window.innerWidth >= 600) {
         this.config.props.orientation = this.initialConfig.props.orientation
       } else {
         this.config.props.orientation = 'vertical'
       }
-      LayoutUtils.addMargins(this.config)
     },
     deleteChild(childId) {
       LayoutUtils.removeCell(this.config, childId)

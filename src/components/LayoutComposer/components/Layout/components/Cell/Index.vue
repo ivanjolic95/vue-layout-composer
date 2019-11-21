@@ -8,7 +8,7 @@
     @mousemove.stop="hovered = true"
     @mouseout="hovered = false"
     :draggable="editable"
-    @drag="$emit('internal:drag', $event)"
+    @drag.stop="$emit('internal:drag', $event)"
     @dragstart="$emit('internal:dragstart', $event)"
     @dragend.stop="$emit('internal:dragend', $event)"
   >
@@ -30,15 +30,16 @@ import LayoutUtils from '../../../../utils/layout'
 export default {
   name: 'Cell',
   props: {
-    id:       Number,
-    display:  Object,
-    editable: Boolean,
-    config:   Object,
-    dragging: Boolean,
+    id:                 Number,
+    display:            Object,
+    editable:           Boolean,
+    config:             Object,
+    dragging:           Boolean,
+    layoutOrientation:  String,
+    isFirstChild:       Boolean,
   },
   data() {
     return {
-      internalConfig:         {},
       targetEl:               null,
       parentLayoutComponent:  null,
       prevParentId:           null,
@@ -51,7 +52,6 @@ export default {
     }
   },
   created() {
-    this.internalConfig = this.config
     this.parentLayoutComponent = this.$parent.$parent.$parent
 
     if (/firefox/i.test(navigator.userAgent)) {
@@ -70,13 +70,18 @@ export default {
     this.$on('internal:dragstart', this.onDragStart)
   },
   computed: {
+    internalConfig() {
+      return this.config
+    },
     style() {
-      if (!this.internalConfig || !this.internalConfig.internalDisplay) return {}
-
-      const {
-        marginTop,
-        marginLeft,
-      } = this.internalConfig.internalDisplay
+      let marginTop, marginLeft
+      if (this.layoutOrientation) {
+        if (this.layoutOrientation === 'horizontal') {
+          marginLeft = this.isFirstChild ? '0px' : '8px'
+        } else {
+          marginTop = this.isFirstChild ? '0px' : '8px'
+        }
+      }
 
       if (!this.display) return {
         marginTop,
@@ -142,9 +147,10 @@ export default {
       this.placeholderEl = $placeholderEl
     },
     onDragStart(event) {
+      if (!this.editable || window.isDragging) return
       window.isDragging = true
-      if (!this.editable) return
       this.targetEl = event.target
+      window.targetEl = this.targetEl
       this.prevParentId = UiUtils.getParentId(event.target)
 
       this.setMousePositionInDraggedElement(event)
@@ -267,6 +273,7 @@ export default {
     },
     onDrag(event) {
       if (!this.editable) return
+      if (this.targetEl !== window.targetEl) return
       const startX = event.clientX - this.mousePosInElX
       const startY = event.clientY - this.mousePosInElY
 
@@ -292,7 +299,7 @@ export default {
 
       UiUtils.moveCellToPlaceholderPosition(cellId, lastLayoutEl, targetEl.parentElement)
 
-      const parentId = UiUtils.getParentId(targetEl) // BUG!!!!!!!!
+      const parentId = UiUtils.getParentId(targetEl)
       const prevSiblingId = UiUtils.getPrevSiblingId(targetEl)
 
       const { newPrevParentLayoutJson, newNextParentLayoutJson } = LayoutUtils.moveElementToNewPosition(targetEl.__vue__.$parent.getConfig(), this.parentLayoutComponent.config, this.lastLayoutComponent.config, UiUtils.extractCellId(cellId), parentId, prevParentId, prevSiblingId)
@@ -313,7 +320,6 @@ export default {
 .Layout_Cell, .Layout_Cell--placeholder {
   position: relative;
   flex-grow: 1;
-  margin: 0;
   flex-basis: 0;
   box-sizing: border-box;
 }
