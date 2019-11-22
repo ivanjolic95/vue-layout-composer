@@ -8,6 +8,7 @@
     :dragging="dragging"
     :layout-orientation="layoutOrientation"
     :is-first-child="isFirstChild"
+    @delete:content="$emit('delete:content')"
   >
     <div class="Layout"
       :class="classes"
@@ -111,7 +112,7 @@ export default {
       })
     },
     getComponentName(config) {
-      if (!config) return null
+      if (!config || !config.component) return null
       if (config.component.indexOf('Layout') === -1)
         return this.$layoutComposer.getComponentName(config.component)
       else

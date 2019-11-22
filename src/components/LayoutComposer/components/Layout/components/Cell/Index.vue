@@ -12,9 +12,9 @@
     @dragstart="$emit('internal:dragstart', $event)"
     @dragend.stop="$emit('internal:dragend', $event)"
   >
-    <div v-if="editable && $parent.$options.name !== 'Layout'" class="Layout_Cell__actions">
-      <span class="Layout_Cell__edit" @click="$emit('edit:content')"><font-awesome-icon icon="edit" /></span>
-      <span class="Layout_Cell__delete" @click="$emit('delete:content')"><font-awesome-icon icon="trash" /></span>
+    <div v-if="editable" class="Layout_Cell__actions">
+      <span v-if="$parent.$options.name !== 'Layout'" class="Layout_Cell__edit" @click="$emit('edit:content')"><font-awesome-icon icon="edit" /></span>
+      <span v-if="$parent.$options.name !== 'Layout' || !$parent.config.children.length" class="Layout_Cell__delete" @click="$emit('delete:content')"><font-awesome-icon icon="trash" /></span>
     </div>
     <!-- <span class="Layout_Cell__id" v-if="editable">{{id}}</span> -->
     <slot />
@@ -49,6 +49,7 @@ export default {
       mousePosInElX:          0,
       mousePosInElY:          0,
       hovered:                false,
+      dropped:                false,
     }
   },
   created() {
@@ -68,6 +69,11 @@ export default {
       this.$on('internal:drag', this.onDrag)
     }
     this.$on('internal:dragstart', this.onDragStart)
+  },
+  watch: {
+    dragging(newValue) {
+      this.dropped = !newValue
+    },
   },
   computed: {
     internalConfig() {
@@ -99,11 +105,12 @@ export default {
       }
     },
     classes() {
-      const { hovered, editable, dragging } = this
+      const { hovered, editable, dragging, dropped } = this
 
       return {
         'Layout_Cell--hovered': hovered && editable,
         'Layout_Cell--dragging': dragging,
+        'Layout_Cell--dropped': dropped,
       }
     }
   },
@@ -119,19 +126,25 @@ export default {
       this.mousePosInElY = y > dragAreaTreshold ? dragAreaTreshold : y
     },
     createPlaceholderElement() {
-      const { targetEl } = this
+      const { targetEl, placeholderEl } = this
+
+      if (placeholderEl) return;
 
       const $placeholderText = document.createElement('p')
-      $placeholderText.style.lineHeight = `${targetEl.clientHeight}px`
+      $placeholderText.style.width = '100%'
       $placeholderText.style.textAlign = 'center'
       $placeholderText.style.marginTop = '0px'
       $placeholderText.style.marginBottom = '0px'
+      $placeholderText.style.position = 'absolute'
+      $placeholderText.style.top = '50%'
+      $placeholderText.style.transform = 'translateY(-50%)'
       $placeholderText.innerText = 'Drop here!'
 
       const $placeholderChild = document.createElement('div')
       $placeholderChild.prepend($placeholderText)
-      $placeholderChild.style.height = `${targetEl.clientHeight}px`
-      $placeholderChild.style.width = '100%'
+      const child = [...targetEl.children].filter(el => el.className.indexOf('Layout_Cell__actions') === -1)[0]
+      $placeholderChild.style.height = '100%'
+      $placeholderChild.style.minHeight = window.getComputedStyle(child).getPropertyValue('min-height')
       $placeholderChild.style.display = 'block'
 
       const $placeholderEl = document.createElement('div')
@@ -139,9 +152,8 @@ export default {
          e.preventDefault()
       })
       $placeholderEl.className = 'Layout_Cell--placeholder'
-      $placeholderEl.style.flexGrow = targetEl.style.flexGrow
-      $placeholderEl.style.minHeight = `${targetEl.clientHeight}px`
-      $placeholderEl.style.maxHeight = `${targetEl.clientHeight}px`
+      $placeholderEl.style.opacity = 1
+      $placeholderEl.style.flexGrow = targetEl.style.flexGrow || '1'
       $placeholderEl.prepend($placeholderChild)
 
       this.placeholderEl = $placeholderEl
@@ -182,6 +194,13 @@ export default {
 
       if (layoutComponent) this.lastLayoutComponent = layoutComponent
       if ($layoutEl) this.lastLayoutEl = $layoutEl
+    },
+    emphasizeCurrentLayout() {
+      const EMPHASIZE_CELL_CLASS = '.Layout_Cell--emphasized'
+      ;[...document.querySelectorAll(EMPHASIZE_CELL_CLASS)].forEach(el => el.className = el.className.replace(/Layout_Cell--emphasized/, ''))
+      if (!this.lastLayoutComponent) return
+      if (this.lastLayoutComponent.$parent.$options.name === 'LayoutComposer') return
+      this.lastLayoutComponent.$children[0].$el.className = `${this.lastLayoutComponent.$children[0].$el.className} Layout_Cell--emphasized`
     },
     getSiblingsFromLayout() {
       const { targetEl, lastLayoutEl } = this
@@ -232,7 +251,8 @@ export default {
         }
       })
 
-      if ($childBeforeEl && ($childBeforeEl.nextSibling === targetEl && targetEl.style.display && targetEl.style.display !== 'none')) return
+      if ($childBeforeEl && (($childBeforeEl.nextSibling && $childBeforeEl.nextSibling.className === CELL_PLACEHOLDER_CLASS.replace(/\./, '')) || ($childBeforeEl.nextSibling === targetEl && targetEl.style.display && targetEl.style.display !== 'none'))) return
+      if (!$childBeforeEl && lastLayoutEl && lastLayoutEl.children && lastLayoutEl.children[0].className === CELL_PLACEHOLDER_CLASS.replace(/\./, '')) return
 
       [...document.querySelectorAll(CELL_PLACEHOLDER_CLASS)].forEach(el => el.remove())
       targetEl.style.display = 'none'
@@ -282,6 +302,7 @@ export default {
       if (!$layoutEl) return
 
       this.setLayoutComponent($layoutEl)
+      this.emphasizeCurrentLayout()
       
       const $siblings = this.getSiblingsFromLayout()
     
@@ -317,6 +338,32 @@ export default {
 </script>
 
 <style>
+@keyframes pop-in {
+  0%   {padding: 0;}
+  25%  {padding: 3px;}
+  50%  {padding: 6px;}
+  100% {padding: 10px;}
+}
+
+@keyframes pop-out {
+  0%   {padding: 10px;}
+  25%  {padding: 6px;}
+  50%  {padding: 3px;}
+  100% {padding: 0;}
+}
+
+@keyframes grow-right {
+  0%   {flex-grow: 0;opacity: 0;}
+  60%  {flex-grow: 1;opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@keyframes grow-down {
+  0%   {opacity: 0;}
+  90%  {opacity: 0;}
+  100% {opacity: 1;}
+}
+
 .Layout_Cell, .Layout_Cell--placeholder {
   position: relative;
   flex-grow: 1;
@@ -327,6 +374,16 @@ export default {
 .Layout_Cell--dragging {
   border: 1px solid #e3e3e3;
   padding: 10px;
+  animation: pop-in 0.2s cubic-bezier(0.075, 0.82, 0.165, 1) 0s 1;
+}
+
+.Layout_Cell--emphasized {
+  border-color: #aaaaaa;
+}
+
+.Layout_Cell--dropped {
+  padding: 0;
+  animation: pop-out 0.2s cubic-bezier(0.075, 0.82, 0.165, 1) 0s 1;
 }
 
 .Layout_Cell--hovered {
@@ -336,8 +393,19 @@ export default {
 }
 
 .Layout_Cell--placeholder {
+  opacity: 1;
   background: #03A696;
   color: #fff;
+  min-height: 50px;
+}
+
+.Layout--horizontal > .Layout_Cell--placeholder {
+  animation: grow-right 0.2s linear 0s 1;
+}
+
+.Layout--vertical > .Layout_Cell--placeholder {
+  animation: grow-down 0.2s linear 0s 1;
+  transition: height 0.2s linear;
 }
 
   .Layout_Cell__id {
@@ -353,6 +421,7 @@ export default {
     display: flex;
     width: 100%;
     justify-content: flex-end;
+    z-index: 100;
   }
 
     .Layout_Cell__actions span {
