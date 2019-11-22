@@ -22,7 +22,7 @@
         @mouseleave.stop="moveHovered = false"
       >
         <font-awesome-icon icon="arrows-alt" />
-        <span v-if="hovered || moveHovered">Move Layout</span>
+        <span v-if="moveHovered">Move Layout</span>
       </div>
 
       <component
@@ -64,8 +64,8 @@ export default {
   data() {
     return {
       config:       _.cloneDeep(this.initialConfig),
-      moveHovered:  false,
       hovered:      false,
+      moveHovered:  false,
     }
   },
   created() {
@@ -84,10 +84,10 @@ export default {
     classes() {
       if (!this.config) return ''
       const { id, props: { orientation } } = this.config
-      const { internalEditable, hovered, moveHovered } = this
+      const { internalEditable, moveHovered } = this
 
       return {
-        'Layout--move-hovered': id !== 0 && internalEditable && (hovered || moveHovered),
+        'Layout--move-hovered': id !== 0 && internalEditable && moveHovered,
         'Layout--horizontal':   orientation === 'horizontal',
         'Layout--vertical':     orientation === 'vertical',
       }
@@ -149,13 +149,9 @@ export default {
   }
 
   .Layout--move-hovered {
-    background: #f0f0f0;
+    background: #03A696;
     cursor: grab;
   }
-
-    .Layout--move-hovered .Layout _Cell {
-      opacity: 0.2;
-    }
 
     .Layout .Layout--move-hovered > .Layout__move {
       color: #284664;

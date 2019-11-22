@@ -5,9 +5,9 @@
     :class="classes"
     :style="style"
     :id="`cell-${id}`"
-    @mousemove.stop="hovered = true"
-    @mouseout="hovered = false"
     :draggable="editable"
+    @mousemove.stop="onMouseMove"
+    @mouseout.stop="hovered = false"
     @drag.stop="$emit('internal:drag', $event)"
     @dragstart="$emit('internal:dragstart', $event)"
     @dragend.stop="$emit('internal:dragend', $event)"
@@ -26,6 +26,8 @@ import Vue from 'vue'
 
 import UiUtils from '../../../../utils/ui'
 import LayoutUtils from '../../../../utils/layout'
+
+import { EventBus } from '../../../../eventBus'
 
 export default {
   name: 'Cell',
@@ -69,6 +71,8 @@ export default {
       this.$on('internal:drag', this.onDrag)
     }
     this.$on('internal:dragstart', this.onDragStart)
+
+    EventBus.$on('global:dragend', () => this.hovered = false)
   },
   watch: {
     dragging(newValue) {
@@ -105,16 +109,19 @@ export default {
       }
     },
     classes() {
-      const { hovered, editable, dragging, dropped } = this
+      const { editable, hovered, dragging, dropped } = this
 
       return {
-        'Layout_Cell--hovered': hovered && editable,
-        'Layout_Cell--dragging': dragging,
-        'Layout_Cell--dropped': dropped,
+        'Layout_Cell--hovered':   editable && hovered,
+        'Layout_Cell--dragging':  dragging,
+        'Layout_Cell--dropped':   dropped,
       }
     }
   },
   methods: {
+    onMouseMove() {
+      this.hovered = window.isDragging ? false : true
+    },
     setMousePositionInDraggedElement(event) {
       const rect = event.target.getBoundingClientRect()
       const x = event.clientX - rect.left
@@ -331,6 +338,8 @@ export default {
       ;[...document.querySelectorAll(CELL_PLACEHOLDER_CLASS)].forEach(el => el.remove())
       if (targetEl) targetEl.style.display = 'block'
 
+      EventBus.$emit('global:dragend')
+
       return false
     }
   }
@@ -371,6 +380,12 @@ export default {
   box-sizing: border-box;
 }
 
+.Layout_Cell--hovered {
+  cursor: grab;
+  background: #03A696;
+  opacity: 0.4;
+}
+
 .Layout_Cell--dragging {
   border: 1px solid #e3e3e3;
   padding: 10px;
@@ -384,12 +399,6 @@ export default {
 .Layout_Cell--dropped {
   padding: 0;
   animation: pop-out 0.2s cubic-bezier(0.075, 0.82, 0.165, 1) 0s 1;
-}
-
-.Layout_Cell--hovered {
-  cursor: grab;
-  background: #eeeeee;
-  opacity: 0.5;
 }
 
 .Layout_Cell--placeholder {
@@ -421,7 +430,7 @@ export default {
     display: flex;
     width: 100%;
     justify-content: flex-end;
-    z-index: 100;
+    z-index: 50;
   }
 
     .Layout_Cell__actions span {

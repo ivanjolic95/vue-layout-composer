@@ -41,6 +41,8 @@ import _ from 'lodash'
 import UiUtils from './utils/ui'
 import LayoutUtils from './utils/layout'
 
+import { EventBus } from './eventBus'
+
 import Layout from './components/Layout'
 
 export default {
@@ -81,7 +83,7 @@ export default {
       event.preventDefault()
     })
 
-    document.addEventListener('drop', () => {
+    EventBus.$on('global:dragend', () => {
       if (!this.internalEditable) return false
       setTimeout(() => {
         this.dragging = false

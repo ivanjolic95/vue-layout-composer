@@ -17,9 +17,14 @@ const resetLayoutsStyle = () => {
 }
 
 const moveCellToPlaceholderPosition = (cellId, newRoot = document, prevRoot = document) => {
-  const $placeholder = newRoot.querySelector(PLACEHOLDER_CLASS)
+  const $placeholders = [...newRoot.querySelectorAll(PLACEHOLDER_CLASS)]
+  const $otherPlaceholders = $placeholders.slice(1)
 
-  if (!$placeholder) return
+  if (!$placeholders.length) return
+
+  const $placeholder = $placeholders[0]
+
+  $otherPlaceholders.forEach($placeholder => $placeholder.remove())
   
   const $cell = prevRoot.querySelector(`[id='${cellId}']`)
 

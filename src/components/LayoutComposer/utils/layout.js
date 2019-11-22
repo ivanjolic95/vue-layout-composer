@@ -30,26 +30,14 @@ const removeIds = (jsonConfig) => {
   return _removeIds(jsonConfig)
 }
 
-const removeCell = (config, cellId, parent = null, index = null) => {
+const removeCell = (config, cellId) => {
   if (cellId === 0) {
-    return false
+    return
   }
-  if (config && config.id === cellId) {
-    const result = { ...config }
-    delete parent.children[index]
-    parent.children = parent.children.filter(child => child)
-    return result
-  }
+
   if (config && config.children) {
-    let found = false
-    for (let [index, child] of config.children.entries()) {
-      const result = removeCell(child, cellId, config, index)
-      found = result
-      if (result) break
-    }
-    return found
+    config.children = config.children.filter(child => child.id !== cellId)
   }
-  return false
 }
 
 const addCell = (config, cell, parentId, prevSiblingId) => {
