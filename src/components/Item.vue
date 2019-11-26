@@ -1,12 +1,8 @@
 <template>
   <cell
-    :key="config.id"
+    v-bind="cellProps"
     :display="config.display"
-    :id="config.id"
-    :config="config"
-    :editable="editable"
-    :layout-orientation="layoutOrientation"
-    :is-first-child="isFirstChild"
+    :draggable="editable"
     @delete:content="$emit('delete:content')"
   >
     <div class="Item" :style="style" @click="onClick">
@@ -24,12 +20,14 @@ export default {
     Cell,
   },
   props: {
+    // vue-layout-composer props
     initialConfig:      Object,
+    editable:           Boolean,
+    cellProps:          Object,
+
+    // custom props
     content:            String,
     background:         String,
-    editable:           Boolean,
-    layoutOrientation:  String,
-    isFirstChild:       Boolean,
   },
   computed: {
     config() {

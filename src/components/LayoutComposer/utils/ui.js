@@ -1,6 +1,6 @@
 const PLACEHOLDER_CLASS = '.Layout_Cell--placeholder'
 
-const extractCellId = (htmlId) => htmlId && parseInt(htmlId, 10)
+const extractCellId = (htmlId) => htmlId && parseInt(htmlId.slice(5), 10)
 
 const showElement = ($el) => {
   $el.style.display = 'block'
@@ -39,11 +39,11 @@ const moveCellToPlaceholderPosition = (cellId, newRoot = document, prevRoot = do
 }
 
 const getParentId = ($cell) => {
-  return parseInt($cell.parentElement.parentElement.id, 10)
+  return extractCellId($cell.parentElement.parentElement.id)
 }
 
 const getPrevSiblingId = ($cell) => {
-  return $cell.previousSibling.previousSibling && parseInt($cell.previousSibling.previousSibling.id, 10)
+  return $cell.previousSibling.previousSibling && extractCellId($cell.previousSibling.previousSibling.id)
 }
 
 export default {

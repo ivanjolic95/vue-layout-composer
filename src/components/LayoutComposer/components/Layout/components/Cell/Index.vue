@@ -5,25 +5,23 @@
     :class="classes"
     :style="style"
     :id="`cell-${id}`"
-    :draggable="editable"
+    :draggable="draggable"
     @mousemove.stop="onMouseMove"
     @mouseout.stop="hovered = false"
     @drag.stop="$emit('internal:drag', $event)"
     @dragstart="$emit('internal:dragstart', $event)"
     @dragend.stop="$emit('internal:dragend', $event)"
   >
-    <div v-if="editable" class="Layout_Cell__actions">
+    <div v-if="draggable" class="Layout_Cell__actions">
       <span v-if="$parent.$options.name !== 'Layout'" class="Layout_Cell__edit" @click="$emit('edit:content')"><font-awesome-icon icon="edit" /></span>
       <span v-if="$parent.$options.name !== 'Layout' || !$parent.config.children.length" class="Layout_Cell__delete" @click="$emit('delete:content')"><font-awesome-icon icon="trash" /></span>
     </div>
-    <!-- <span class="Layout_Cell__id" v-if="editable">{{id}}</span> -->
+    <!-- <span class="Layout_Cell__id" v-if="draggable">{{id}}</span> -->
     <slot />
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-
 import UiUtils from '../../../../utils/ui'
 import LayoutUtils from '../../../../utils/layout'
 
@@ -32,13 +30,15 @@ import { EventBus } from '../../../../eventBus'
 export default {
   name: 'Cell',
   props: {
+    // set by Layout component
     id:                 Number,
-    display:            Object,
-    editable:           Boolean,
-    config:             Object,
     dragging:           Boolean,
     layoutOrientation:  String,
     isFirstChild:       Boolean,
+
+    // user controlled
+    display:            Object,
+    draggable:          Boolean,
   },
   data() {
     return {
@@ -109,10 +109,10 @@ export default {
       }
     },
     classes() {
-      const { editable, hovered, dragging, dropped } = this
+      const { draggable, hovered, dragging, dropped } = this
 
       return {
-        'Layout_Cell--hovered':   editable && hovered,
+        'Layout_Cell--hovered':   draggable && hovered,
         'Layout_Cell--dragging':  dragging,
         'Layout_Cell--dropped':   dropped,
       }
@@ -166,7 +166,7 @@ export default {
       this.placeholderEl = $placeholderEl
     },
     onDragStart(event) {
-      if (!this.editable || window.isDragging) return
+      if (!this.draggable || window.isDragging) return
       window.isDragging = true
       this.targetEl = event.target
       window.targetEl = this.targetEl
@@ -299,7 +299,7 @@ export default {
       }
     },
     onDrag(event) {
-      if (!this.editable) return
+      if (!this.draggable) return
       if (this.targetEl !== window.targetEl) return
       const startX = event.clientX - this.mousePosInElX
       const startY = event.clientY - this.mousePosInElY
@@ -316,13 +316,13 @@ export default {
       this.appendPlaceholderToDOM($siblings, startX, startY)
     },
     onDragEnd() {
-      if (!this.editable || !window.isDragging) return true
+      if (!this.draggable || !window.isDragging) return true
       window.isDragging = false
       const CELL_PLACEHOLDER_CLASS = '.Layout_Cell--placeholder';
       const { targetEl, lastLayoutEl, prevParentId } = this;
 
       if (!targetEl || !targetEl.parentElement) return true
-
+  
       const cellId = targetEl.id
 
       UiUtils.moveCellToPlaceholderPosition(cellId, lastLayoutEl, targetEl.parentElement)

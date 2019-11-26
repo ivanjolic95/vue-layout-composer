@@ -24,12 +24,16 @@
     </template>
 
     <Layout
+      :cellProps="{
+        id: internalConfig.id,
+        dragging,
+        layoutOrientation: '',
+        isFirstChild: true,
+      }"
       :displayComponents="displayComponents"
       :initialConfig="internalConfig"
-      :id="internalConfig.id"
       v-bind="internalConfig.props"
       :editable="internalEditable"
-      :dragging="dragging"
     />
   </div>
 </template>

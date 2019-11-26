@@ -1,13 +1,9 @@
 <template>
   <Cell
+    v-bind="cellProps"
     :display="config.display"
-    :id="config.id"
-    :config="config"
-    :editable="internalEditable"
+    :draggable="internalEditable"
     :key="config.id"
-    :dragging="dragging"
-    :layout-orientation="layoutOrientation"
-    :is-first-child="isFirstChild"
     @delete:content="$emit('delete:content')"
   >
     <div class="Layout"
@@ -28,14 +24,16 @@
       <component
         v-for="child in children"
         v-bind="child.props"
-        :id="child.id"
         :key="child.id"
+        :is="getComponentName(child)"
         :editable="editable"
         :initialConfig="child"
-        :is="getComponentName(child)"
-        :dragging="dragging"
-        :layout-orientation="config.props.orientation"
-        :is-first-child="children[0].id === child.id"
+        :cellProps="{
+          id: child.id,
+          dragging,
+          layoutOrientation: config.props.orientation,
+          isFirstChild: children[0].id === child.id
+        }"
         @delete:content="deleteChild(child.id)" />
     </div>
   </Cell>
@@ -54,12 +52,14 @@ export default {
     Cell,
   },
   props: {
+    // vue-layout-composer props
     initialConfig:      Object,
-    displayComponents:  Object,
     editable:           Boolean,
+    cellProps:          Object,
+
+    // Layout props
+    displayComponents:  Object,
     dragging:           Boolean,
-    layoutOrientation:  String,
-    isFirstChild:       Boolean,
   },
   data() {
     return {
