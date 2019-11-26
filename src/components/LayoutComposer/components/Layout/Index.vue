@@ -30,7 +30,7 @@
         :initialConfig="child"
         :cellProps="{
           id: child.id,
-          dragging,
+          dragging: child.component === 'Layout' && cellProps.dragging,
           layoutOrientation: config.props.orientation,
           isFirstChild: children[0].id === child.id
         }"
@@ -59,7 +59,6 @@ export default {
 
     // Layout props
     displayComponents:  Object,
-    dragging:           Boolean,
   },
   data() {
     return {
