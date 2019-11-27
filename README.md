@@ -8,7 +8,11 @@ Create your components, specify your JSON layout configuration and let the vue-l
 
 ## Installation
 
-INSTALLATION_PLACEHOLDER
+`yarn add vue-layout-composer`
+
+OR
+
+`npm install vue-layout-composer --save`
 
 ## Usage
 
