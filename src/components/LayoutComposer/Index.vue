@@ -46,7 +46,7 @@ import _ from 'lodash'
 
 import LayoutUtils from './utils/layout'
 
-import { EventBus } from './eventBus'
+import EventBus from './eventBus'
 
 import Layout from './components/Layout'
 
