@@ -1,8 +1,9 @@
+/* eslint-disable no-param-reassign */
 const PLACEHOLDER_CLASS = '.Layout_Cell--placeholder'
 
-const extractCellId = (htmlId) => htmlId && parseInt(htmlId.slice(5), 10)
+const extractCellId = htmlId => htmlId && parseInt(htmlId.slice(5), 10)
 
-const showElement = ($el) => {
+const showElement = $el => {
   $el.style.display = 'block'
 }
 
@@ -16,7 +17,11 @@ const resetLayoutsStyle = () => {
   })
 }
 
-const moveCellToPlaceholderPosition = (cellId, newRoot = document, prevRoot = document) => {
+const moveCellToPlaceholderPosition = (
+  cellId,
+  newRoot = document,
+  prevRoot = document
+) => {
   const $placeholders = [...newRoot.querySelectorAll(PLACEHOLDER_CLASS)]
   const $otherPlaceholders = $placeholders.slice(1)
 
@@ -24,8 +29,8 @@ const moveCellToPlaceholderPosition = (cellId, newRoot = document, prevRoot = do
 
   const $placeholder = $placeholders[0]
 
-  $otherPlaceholders.forEach($placeholder => $placeholder.remove())
-  
+  $otherPlaceholders.forEach($otherPlaceholder => $otherPlaceholder.remove())
+
   const $cell = prevRoot.querySelector(`[id='${cellId}']`)
 
   if (!$cell) return
@@ -38,12 +43,15 @@ const moveCellToPlaceholderPosition = (cellId, newRoot = document, prevRoot = do
   $placeholder.parentNode.insertBefore($cell, $placeholder.nextSibling)
 }
 
-const getParentId = ($cell) => {
+const getParentId = $cell => {
   return extractCellId($cell.parentElement.parentElement.id)
 }
 
-const getPrevSiblingId = ($cell) => {
-  return $cell.previousSibling.previousSibling && extractCellId($cell.previousSibling.previousSibling.id)
+const getPrevSiblingId = $cell => {
+  return (
+    $cell.previousSibling.previousSibling &&
+    extractCellId($cell.previousSibling.previousSibling.id)
+  )
 }
 
 export default {
