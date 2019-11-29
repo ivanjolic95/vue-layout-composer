@@ -1,12 +1,10 @@
+/* eslint-disable no-param-reassign */
 export default {
   install(Vue) {
     this.Vue = Vue
 
-    const {
-      registerComponent,
-      getComponentName,
-    } = this
-    
+    const { registerComponent, getComponentName } = this
+
     Vue.prototype.$layoutComposer = {
       registerComponent: registerComponent(Vue),
       getComponentName,
@@ -18,5 +16,5 @@ export default {
   },
   getComponentName(name) {
     return `layout-composer-presenter-${name}`
-  }
+  },
 }

@@ -1,11 +1,10 @@
 import Vue from 'vue'
-import App from './App.vue'
-
-import ComponentRegister from './plugins/ComponentRegister'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faArrowsAlt, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import ComponentRegister from './plugins/ComponentRegister'
+import App from './App.vue'
 
 Vue.config.productionTip = false
 
