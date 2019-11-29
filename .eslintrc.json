@@ -19,6 +19,7 @@
       "never"
     ],
     "consistent-return": "off",
+    "no-underscore-dangle": "off",
     "no-unused-expressions": 1,
     "import/no-unresolved": "off", // Suppress errors caused by import "@/..."
     "max-len": "off", // Allow lines longer than 100 characters
