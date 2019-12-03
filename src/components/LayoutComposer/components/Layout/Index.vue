@@ -1,19 +1,20 @@
 <template>
   <Cell
+    :key="config.id"
     v-bind="cellProps"
     :display="config.display"
     :draggable="internalEditable"
-    :key="config.id"
     @delete:content="$emit('delete:content')"
   >
-    <div class="Layout"
+    <div
+      class="Layout"
       :class="classes"
       @mousemove="hovered = true"
       @mouseout="hovered = false"
     >
       <div
-        class="Layout__move"
         v-if="config.id !== 0 && internalEditable"
+        class="Layout__move"
         @mouseenter.stop="moveHovered = true"
         @mouseleave.stop="moveHovered = false"
       >
@@ -22,19 +23,20 @@
       </div>
 
       <component
-        v-for="child in children"
-        v-bind="child.props"
-        :key="child.id"
         :is="getComponentName(child)"
+        v-for="child in children"
+        :key="child.id"
+        v-bind="child.props"
         :editable="editable"
-        :initialConfig="child"
-        :cellProps="{
+        :initial-config="child"
+        :cell-props="{
           id: child.id,
           dragging: child.component === 'Layout' && cellProps.dragging,
           layoutOrientation: config.props.orientation,
-          isFirstChild: children[0].id === child.id
+          isFirstChild: children[0].id === child.id,
         }"
-        @delete:content="deleteChild(child.id)" />
+        @delete:content="deleteChild(child.id)"
+      />
     </div>
   </Cell>
 </template>
@@ -53,19 +55,42 @@ export default {
   },
   props: {
     // vue-layout-composer props
-    initialConfig:      Object,
-    editable:           Boolean,
-    cellProps:          Object,
+    initialConfig: Object,
+    editable: Boolean,
+    cellProps: Object,
 
     // Layout props
-    displayComponents:  Object,
+    displayComponents: Object,
   },
   data() {
     return {
-      config:       _.cloneDeep(this.initialConfig),
-      hovered:      false,
-      moveHovered:  false,
+      config: _.cloneDeep(this.initialConfig),
+      hovered: false,
+      moveHovered: false,
     }
+  },
+  computed: {
+    internalEditable() {
+      if (this.config.id === 0) return false
+      return this.editable
+    },
+    classes() {
+      if (!this.config) return ''
+      const {
+        id,
+        props: { orientation },
+      } = this.config
+      const { internalEditable, moveHovered } = this
+
+      return {
+        'Layout--move-hovered': id !== 0 && internalEditable && moveHovered,
+        'Layout--horizontal': orientation === 'horizontal',
+        'Layout--vertical': orientation === 'vertical',
+      }
+    },
+    children() {
+      return this.config.children || []
+    },
   },
   created() {
     window.addEventListener('resize', this.configureForMobile)
@@ -74,26 +99,6 @@ export default {
     Object.keys(this.displayComponents).forEach(name =>
       this.$layoutComposer.registerComponent(name, this.displayComponents[name])
     )
-  },
-  computed: {
-    internalEditable() {
-      if (this.config.id === 0) return false;
-      return this.editable
-    },
-    classes() {
-      if (!this.config) return ''
-      const { id, props: { orientation } } = this.config
-      const { internalEditable, moveHovered } = this
-
-      return {
-        'Layout--move-hovered': id !== 0 && internalEditable && moveHovered,
-        'Layout--horizontal':   orientation === 'horizontal',
-        'Layout--vertical':     orientation === 'vertical',
-      }
-    },
-    children() {
-      return this.config.children || []
-    },
   },
   methods: {
     configUpdate(newConfig) {
@@ -107,15 +112,18 @@ export default {
     },
     getChildrenConfigurations() {
       return this.config.children.map(child => {
-        return _.cloneDeep(this.$children[0].$children.find(childComponent => childComponent.config.id === child.id).getConfig())
+        return _.cloneDeep(
+          this.$children[0].$children
+            .find(childComponent => childComponent.config.id === child.id)
+            .getConfig()
+        )
       })
     },
     getComponentName(config) {
       if (!config || !config.component) return null
       if (config.component.indexOf('Layout') === -1)
         return this.$layoutComposer.getComponentName(config.component)
-      else
-        return config.component
+      return config.component
     },
     configureForMobile() {
       if (window.innerWidth >= 600) {
@@ -127,7 +135,7 @@ export default {
     deleteChild(childId) {
       LayoutUtils.removeCell(this.config, childId)
     },
-  }
+  },
 }
 </script>
 
@@ -139,36 +147,36 @@ export default {
   position: relative;
 }
 
-  .Layout--horizontal {
-    flex-direction: row;
-  }
+.Layout--horizontal {
+  flex-direction: row;
+}
 
-  .Layout--vertical {
-    flex-direction: column;
-  }
+.Layout--vertical {
+  flex-direction: column;
+}
 
-  .Layout--move-hovered {
-    background: #03A696;
-    cursor: grab;
-  }
+.Layout--move-hovered {
+  background: #03a696;
+  cursor: grab;
+}
 
-    .Layout .Layout--move-hovered > .Layout__move {
-      color: #284664;
-    }
+.Layout .Layout--move-hovered > .Layout__move {
+  color: #284664;
+}
 
-  .Layout .Layout__move {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    font-size: 12px;
-    z-index: 100;
-    color: #c4c4c4;
-    min-width: 50px;
-    height: 20px;
-    text-align: left;
-  }
+.Layout .Layout__move {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 12px;
+  z-index: 100;
+  color: #c4c4c4;
+  min-width: 50px;
+  height: 20px;
+  text-align: left;
+}
 
-    .Layout .Layout__move span {
-      margin-left: 2px;
-    }
+.Layout .Layout__move span {
+  margin-left: 2px;
+}
 </style>

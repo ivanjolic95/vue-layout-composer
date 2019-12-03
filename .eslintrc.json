@@ -1,0 +1,54 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:vue/recommended",
+    "prettier/vue",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "semi": [
+      "error",
+      "never"
+    ],
+    "consistent-return": "off",
+    "no-underscore-dangle": "off",
+    "no-unused-expressions": 1,
+    "import/no-unresolved": "off", // Suppress errors caused by import "@/..."
+    "max-len": "off", // Allow lines longer than 100 characters
+    "no-param-reassign": [
+      "error", // Allow param reassigns required by Vuex
+      {
+        "props": true,
+        "ignorePropertyModificationsFor": [
+          "state",
+          "acc",
+          "e",
+          "ctx",
+          "req",
+          "request",
+          "res",
+          "response",
+          "$scope"
+        ]
+      }
+    ],
+    "vue/attributes-order": "error",
+    "vue/html-self-closing": ["error", {
+      "html": {
+        "void": "always",
+        "normal": "always",
+        "component": "always"
+      },
+      "svg": "always",
+      "math": "always"
+    }]
+  }
+}

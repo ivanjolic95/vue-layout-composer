@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <layout-composer
-      :displayComponents="displayComponents"
+      :display-components="displayComponents"
       :config="config"
       @change:config="onConfigChange"
     />
@@ -15,14 +15,14 @@ import LayoutComposer from './components/LayoutComposer'
 import Item from './components/Item'
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     LayoutComposer,
   },
   data() {
     return {
       displayComponents: {
-        'Item': Item,
+        Item,
       },
       config,
     }

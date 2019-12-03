@@ -5,7 +5,7 @@
         <a
           href="#"
           class="LayoutComposer__ActionButton"
-          @click.prevent="internalEditable = !internalEditable;"
+          @click.prevent="internalEditable = !internalEditable"
         >
           Edit
         </a>
@@ -16,7 +16,10 @@
         <a
           href="#"
           class="LayoutComposer__ActionButton"
-          @click.prevent="internalEditable = !internalEditable; buildConfig()"
+          @click.prevent="
+            internalEditable = !internalEditable
+            buildConfig()
+          "
         >
           Save
         </a>
@@ -24,14 +27,14 @@
     </template>
 
     <Layout
-      :cellProps="{
+      :cell-props="{
         id: internalConfig.id,
         dragging,
         layoutOrientation: '',
         isFirstChild: true,
       }"
-      :displayComponents="displayComponents"
-      :initialConfig="internalConfig"
+      :display-components="displayComponents"
+      :initial-config="internalConfig"
       v-bind="internalConfig.props"
       :editable="internalEditable"
     />
@@ -39,13 +42,11 @@
 </template>
 
 <script>
-import fs from 'fs'
 import _ from 'lodash'
 
-import UiUtils from './utils/ui'
 import LayoutUtils from './utils/layout'
 
-import { EventBus } from './eventBus'
+import EventBus from './eventBus'
 
 import Layout from './components/Layout'
 
@@ -55,9 +56,33 @@ export default {
     Layout,
   },
   props: {
-    displayComponents:  Object,
-    config:             Object,
-    editable:           Boolean,
+    displayComponents: Object,
+    config: Object,
+    editable: Boolean,
+  },
+  data() {
+    return {
+      dragging: false,
+      internalConfig: {},
+      internalEditable: this.editable,
+    }
+  },
+  computed: {
+    configHumanized: {
+      get() {
+        const internalConfigNoIds = _.cloneDeep(this.internalConfig)
+        LayoutUtils.removeIds(internalConfigNoIds)
+        return JSON.stringify(internalConfigNoIds, null, 4)
+      },
+      set(newValue) {
+        try {
+          this.internalConfig = JSON.parse(newValue)
+          LayoutUtils.addIds(this.internalConfig)
+        } catch (e) {
+          // catch
+        }
+      },
+    },
   },
   watch: {
     internalConfig() {
@@ -76,15 +101,15 @@ export default {
   mounted() {
     if (window.documentHasDropListener) return
 
-    document.addEventListener('dragstart', (event) => {
+    document.addEventListener('dragstart', () => {
       setTimeout(() => {
         this.dragging = true
       }, 100)
     })
 
-    document.addEventListener('dragover', (event) => {
-      if (!this.internalEditable) return true
+    document.addEventListener('dragover', event => {
       event.preventDefault()
+      if (!this.internalEditable) return true
     })
 
     EventBus.$on('global:dragend', () => {
@@ -96,33 +121,11 @@ export default {
 
     window.documentHasDropListener = true
   },
-  data() {
-    return {
-      dragging:         false,
-      internalConfig:   {},
-      internalEditable: this.editable,
-    }
-  },
-  computed: {
-    configHumanized: {
-      get() {
-        const internalConfigNoIds = _.cloneDeep(this.internalConfig)
-        LayoutUtils.removeIds(internalConfigNoIds)
-        return JSON.stringify(internalConfigNoIds, null, 4)
-      },
-      set(newValue) {
-        try {
-          this.internalConfig = JSON.parse(newValue)
-          LayoutUtils.addIds(this.internalConfig)
-        } catch(e) {}
-      },
-    },
-  },
   methods: {
     buildConfig() {
       this.$emit('change:config', this.$children[0].getConfig())
     },
-  }
+  },
 }
 </script>
 
@@ -133,26 +136,26 @@ export default {
   flex-direction: column;
 }
 
-  .LayoutComposer__Actions {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    border-bottom: 1px solid #e3e3e3;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-  }
+.LayoutComposer__Actions {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  border-bottom: 1px solid #e3e3e3;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+}
 
-  .LayoutComposer__ActionButton {
-    align-self: flex-end;
-    margin: 10px;
-    text-decoration: none;
-    color: #007bff;
-    background-color: transparent;
-    background-image: none;
-    border: 1px solid #007bff;
-    padding: .5rem .75rem;
-    font-size: 1rem;
-    line-height: 1.25;
-    border-radius: .25rem;
-  }
+.LayoutComposer__ActionButton {
+  align-self: flex-end;
+  margin: 10px;
+  text-decoration: none;
+  color: #007bff;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid #007bff;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.25;
+  border-radius: 0.25rem;
+}
 </style>

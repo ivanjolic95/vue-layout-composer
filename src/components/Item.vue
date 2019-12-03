@@ -21,19 +21,19 @@ export default {
   },
   props: {
     // vue-layout-composer props
-    initialConfig:      Object,
-    editable:           Boolean,
-    cellProps:          Object,
+    initialConfig: Object,
+    editable: Boolean,
+    cellProps: Object,
 
     // custom props
-    content:            String,
-    background:         String,
+    content: String,
+    background: String,
   },
   computed: {
     config() {
       return {
         ...this.initialConfig,
-        hello: 'world'
+        hello: 'world',
       }
     },
     style() {
@@ -42,7 +42,7 @@ export default {
       return {
         background,
       }
-    }
+    },
   },
   methods: {
     getConfig() {
@@ -50,8 +50,8 @@ export default {
     },
     onClick() {
       console.log('clicked')
-    }
-  }
+    },
+  },
 }
 </script>
 
