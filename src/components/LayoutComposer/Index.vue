@@ -112,6 +112,10 @@ export default {
       if (!this.internalEditable) return true
     })
 
+    document.addEventListener('drop', event => {
+      event.preventDefault()
+    })
+
     EventBus.$on('global:dragend', () => {
       if (!this.internalEditable) return false
       setTimeout(() => {
