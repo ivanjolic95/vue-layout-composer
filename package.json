@@ -1,6 +1,6 @@
 {
   "name": "vue-layout-composer",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Dynamic, drag & drop, JSON-based grid layout for Vue",
   "author": "Ivan Jolic <ivan.jolic1995@gmail.com>",
   "main": "dist/vue-layout-composer.common.js",
