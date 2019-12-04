@@ -16,6 +16,8 @@ OR
 
 ## Usage
 
+*Demo coming soon*
+
 1. Add the `VueLayoutComposer` plugin in your `main.js`
 
 ```vue
