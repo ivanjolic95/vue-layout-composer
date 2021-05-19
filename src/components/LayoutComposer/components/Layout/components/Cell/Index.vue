@@ -128,7 +128,7 @@ export default {
     },
   },
   created() {
-    this.parentLayoutComponent = this.$parent.$parent.$parent.$parent
+    this.parentLayoutComponent = this.$parent.$parent.$parent
 
     if (/firefox/i.test(navigator.userAgent)) {
       document.addEventListener('dragover', event => {
