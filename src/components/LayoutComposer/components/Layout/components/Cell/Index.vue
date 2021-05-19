@@ -44,18 +44,16 @@ import EventBus from '../../../../eventBus'
 export default {
   name: 'Cell',
   props: {
-    // set by Layout component
-    id: Number,
-    dragging: Boolean,
-    layoutOrientation: String,
-    isFirstChild: Boolean,
-
     // user controlled
-    display: Object,
-    draggable: Boolean,
+    display: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
+      draggable: false,
+      cellConfig: null,
       targetEl: null,
       parentLayoutComponent: null,
       prevParentId: null,
@@ -69,8 +67,25 @@ export default {
     }
   },
   computed: {
+    id() {
+      return this.cellConfig && this.cellConfig.id
+    },
+    dragging() {
+      return this.cellConfig && this.cellConfig.dragging
+    },
+    layoutOrientation() {
+      return this.cellConfig && this.cellConfig.layoutOrientation
+    },
+    isFirstChild() {
+      return this.cellConfig && this.cellConfig.isFirstChild
+    },
     internalConfig() {
       return this.config
+    },
+    internalDisplay() {
+      return (
+        this.display || (this.internalConfig && this.internalConfig.display)
+      )
     },
     style() {
       let marginTop
@@ -83,13 +98,13 @@ export default {
         }
       }
 
-      if (!this.display)
+      if (!this.internalDisplay)
         return {
           marginTop,
           marginLeft,
         }
 
-      const { weight: flexGrow } = this.display
+      const { weight: flexGrow } = this.internalDisplay
 
       return {
         flexGrow,
@@ -113,7 +128,7 @@ export default {
     },
   },
   created() {
-    this.parentLayoutComponent = this.$parent.$parent.$parent
+    this.parentLayoutComponent = this.$parent.$parent.$parent.$parent
 
     if (/firefox/i.test(navigator.userAgent)) {
       document.addEventListener('dragover', event => {

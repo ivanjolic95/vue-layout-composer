@@ -1,9 +1,8 @@
 <template>
   <Cell
+    ref="cell"
     :key="config.id"
-    v-bind="cellProps"
     :display="config.display"
-    :draggable="internalEditable"
     @delete:content="$emit('delete:content')"
   >
     <div
@@ -22,20 +21,13 @@
         <span v-if="moveHovered">Move Layout</span>
       </div>
 
-      <component
-        :is="getComponentName(child)"
+      <custom-component
         v-for="child in children"
         :key="child.id"
-        v-bind="child.props"
+        :config="child"
+        :parent="config"
+        :dragging="dragging"
         :editable="editable"
-        :initial-config="child"
-        :cell-props="{
-          id: child.id,
-          dragging: child.component === 'Layout' && cellProps.dragging,
-          layoutOrientation: config.props.orientation,
-          isFirstChild: children[0].id === child.id,
-        }"
-        @delete:content="deleteChild(child.id)"
       />
     </div>
   </Cell>
@@ -44,20 +36,20 @@
 <script>
 import _ from 'lodash'
 
-import LayoutUtils from '../../utils/layout'
-
 import Cell from './components/Cell'
+import CustomComponent from './components/CustomComponent'
 
 export default {
   name: 'Layout',
   components: {
     Cell,
+    CustomComponent,
   },
   props: {
     // vue-layout-composer props
     initialConfig: Object,
     editable: Boolean,
-    cellProps: Object,
+    dragging: Boolean,
 
     // Layout props
     displayComponents: Object,
@@ -112,18 +104,15 @@ export default {
     },
     getChildrenConfigurations() {
       return this.config.children.map(child => {
-        return _.cloneDeep(
-          this.$children[0].$children
-            .find(childComponent => childComponent.config.id === child.id)
-            .getConfig()
+        let component = this.$children[0].$children.find(
+          childComponent => childComponent.config.id === child.id
         )
+        if (component.$options.name === 'CustomComponent') {
+          // eslint-disable-next-line prefer-destructuring
+          component = component.$children[0]
+        }
+        return _.cloneDeep(component.getConfig())
       })
-    },
-    getComponentName(config) {
-      if (!config || !config.component) return null
-      if (config.component.indexOf('Layout') === -1)
-        return this.$layoutComposer.getComponentName(config.component)
-      return config.component
     },
     configureForMobile() {
       if (window.innerWidth >= 600) {
@@ -131,9 +120,6 @@ export default {
       } else {
         this.config.props.orientation = 'vertical'
       }
-    },
-    deleteChild(childId) {
-      LayoutUtils.removeCell(this.config, childId)
     },
   },
 }
