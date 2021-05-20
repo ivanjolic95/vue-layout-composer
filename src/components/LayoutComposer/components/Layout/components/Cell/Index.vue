@@ -24,7 +24,7 @@
           $parent.$options.name !== 'Layout' || !$parent.config.children.length
         "
         class="Layout_Cell__delete"
-        @click="$emit('delete:content')"
+        @click="$parent.$emit('delete:content')"
         ><font-awesome-icon icon="trash"
       /></span>
     </div>
@@ -506,8 +506,8 @@ export default {
 
 .Layout_Cell--hovered {
   cursor: grab;
-  background: #03a696;
-  opacity: 0.4;
+  background: #f0f7ff;
+  opacity: 0.8;
 }
 
 .Layout_Cell--dragging {
@@ -527,7 +527,7 @@ export default {
 
 .Layout_Cell--placeholder {
   opacity: 1;
-  background: #03a696;
+  background: #ebf4ff;
   color: #fff;
   min-height: 50px;
 }

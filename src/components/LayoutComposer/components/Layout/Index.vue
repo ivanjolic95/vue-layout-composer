@@ -11,6 +11,9 @@
       @mousemove="hovered = true"
       @mouseout="hovered = false"
     >
+      <div v-if="!config.children.length">
+        {{ config.props.orientation }} layout
+      </div>
       <div
         v-if="config.id !== 0 && internalEditable"
         class="Layout__move"
@@ -77,6 +80,7 @@ export default {
       const { internalEditable, moveHovered } = this
 
       return {
+        'Layout--empty': !this.config.children.length,
         'Layout--move-hovered': id !== 0 && internalEditable && moveHovered,
         'Layout--horizontal': orientation === 'horizontal',
         'Layout--vertical': orientation === 'vertical',
@@ -187,6 +191,12 @@ export default {
   position: relative;
 }
 
+.Layout--empty {
+  background: #ebf4ff;
+  align-items: center;
+  justify-content: center;
+}
+
 .Layout--horizontal {
   flex-direction: row;
 }
@@ -196,7 +206,7 @@ export default {
 }
 
 .Layout--move-hovered {
-  background: #03a696;
+  background: #ebf4ff;
   cursor: grab;
 }
 
