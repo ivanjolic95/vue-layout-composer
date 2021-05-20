@@ -1,12 +1,8 @@
 <template>
   <div class="LayoutComposer">
     <Layout
-      :cell-props="{
-        id: configInternal.id,
-        dragging,
-        layoutOrientation: '',
-        isFirstChild: true,
-      }"
+      ref="rootLayout"
+      :dragging="dragging"
       :display-components="displayComponents"
       :initial-config="configInternal"
       v-bind="configInternal.props"
@@ -47,6 +43,15 @@ export default {
     }
   },
   computed: {
+    cellProps() {
+      const { configInternal, dragging } = this
+      return {
+        id: configInternal.id,
+        dragging,
+        layoutOrientation: '',
+        isFirstChild: true,
+      }
+    },
     configHumanized: {
       get() {
         const configInternalNoIds = _.cloneDeep(this.configInternal)
@@ -84,6 +89,8 @@ export default {
     LayoutUtils.addIds(this.configInternal)
   },
   mounted() {
+    this.setCellProps()
+
     if (window.documentHasDropListener) return
 
     document.addEventListener('dragstart', () => {
@@ -113,6 +120,13 @@ export default {
     })
 
     window.documentHasDropListener = true
+  },
+  methods: {
+    setCellProps() {
+      if (!this.$refs.rootLayout) return
+      if (!this.$refs.rootLayout.$children) return
+      this.$refs.rootLayout.$children[0].cellConfig = this.cellProps
+    },
   },
 }
 </script>

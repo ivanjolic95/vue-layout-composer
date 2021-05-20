@@ -24,7 +24,7 @@
           $parent.$options.name !== 'Layout' || !$parent.config.children.length
         "
         class="Layout_Cell__delete"
-        @click="$emit('delete:content')"
+        @click="$parent.$emit('delete:content')"
         ><font-awesome-icon icon="trash"
       /></span>
     </div>
@@ -44,18 +44,16 @@ import EventBus from '../../../../eventBus'
 export default {
   name: 'Cell',
   props: {
-    // set by Layout component
-    id: Number,
-    dragging: Boolean,
-    layoutOrientation: String,
-    isFirstChild: Boolean,
-
     // user controlled
-    display: Object,
-    draggable: Boolean,
+    display: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
+      draggable: false,
+      cellConfig: null,
       targetEl: null,
       parentLayoutComponent: null,
       prevParentId: null,
@@ -69,8 +67,25 @@ export default {
     }
   },
   computed: {
+    id() {
+      return this.cellConfig && this.cellConfig.id
+    },
+    dragging() {
+      return this.cellConfig && this.cellConfig.dragging
+    },
+    layoutOrientation() {
+      return this.cellConfig && this.cellConfig.layoutOrientation
+    },
+    isFirstChild() {
+      return this.cellConfig && this.cellConfig.isFirstChild
+    },
     internalConfig() {
       return this.config
+    },
+    internalDisplay() {
+      return (
+        this.display || (this.internalConfig && this.internalConfig.display)
+      )
     },
     style() {
       let marginTop
@@ -83,13 +98,13 @@ export default {
         }
       }
 
-      if (!this.display)
+      if (!this.internalDisplay)
         return {
           marginTop,
           marginLeft,
         }
 
-      const { weight: flexGrow } = this.display
+      const { weight: flexGrow } = this.internalDisplay
 
       return {
         flexGrow,
@@ -491,8 +506,8 @@ export default {
 
 .Layout_Cell--hovered {
   cursor: grab;
-  background: #03a696;
-  opacity: 0.4;
+  background: #f0f7ff;
+  opacity: 0.8;
 }
 
 .Layout_Cell--dragging {
@@ -512,7 +527,7 @@ export default {
 
 .Layout_Cell--placeholder {
   opacity: 1;
-  background: #03a696;
+  background: #ebf4ff;
   color: #fff;
   min-height: 50px;
 }
