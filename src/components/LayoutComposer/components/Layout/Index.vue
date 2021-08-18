@@ -1,9 +1,8 @@
 <template>
   <Cell
+    ref="cell"
     :key="config.id"
-    v-bind="cellProps"
     :display="config.display"
-    :draggable="internalEditable"
     @delete:content="$emit('delete:content')"
   >
     <div
@@ -12,6 +11,9 @@
       @mousemove="hovered = true"
       @mouseout="hovered = false"
     >
+      <div v-if="!config.children.length">
+        {{ config.props.orientation }} layout
+      </div>
       <div
         v-if="config.id !== 0 && internalEditable"
         class="Layout__move"
@@ -26,15 +28,11 @@
         :is="getComponentName(child)"
         v-for="child in children"
         :key="child.id"
+        ref="customComponent"
         v-bind="child.props"
+        :dragging="dragging"
         :editable="editable"
         :initial-config="child"
-        :cell-props="{
-          id: child.id,
-          dragging: child.component === 'Layout' && cellProps.dragging,
-          layoutOrientation: config.props.orientation,
-          isFirstChild: children[0].id === child.id,
-        }"
         @delete:content="deleteChild(child.id)"
       />
     </div>
@@ -43,7 +41,6 @@
 
 <script>
 import _ from 'lodash'
-
 import LayoutUtils from '../../utils/layout'
 
 import Cell from './components/Cell'
@@ -57,7 +54,7 @@ export default {
     // vue-layout-composer props
     initialConfig: Object,
     editable: Boolean,
-    cellProps: Object,
+    dragging: Boolean,
 
     // Layout props
     displayComponents: Object,
@@ -83,6 +80,7 @@ export default {
       const { internalEditable, moveHovered } = this
 
       return {
+        'Layout--empty': !this.config.children.length,
         'Layout--move-hovered': id !== 0 && internalEditable && moveHovered,
         'Layout--horizontal': orientation === 'horizontal',
         'Layout--vertical': orientation === 'vertical',
@@ -92,6 +90,17 @@ export default {
       return this.config.children || []
     },
   },
+  watch: {
+    editable() {
+      this.setCellsProps()
+    },
+    config() {
+      this.setCellsProps()
+    },
+    dragging() {
+      this.setCellsProps()
+    },
+  },
   created() {
     window.addEventListener('resize', this.configureForMobile)
     this.configureForMobile()
@@ -99,6 +108,9 @@ export default {
     Object.keys(this.displayComponents).forEach(name =>
       this.$layoutComposer.registerComponent(name, this.displayComponents[name])
     )
+  },
+  mounted() {
+    this.setCellsProps()
   },
   methods: {
     configUpdate(newConfig) {
@@ -111,19 +123,16 @@ export default {
       }
     },
     getChildrenConfigurations() {
-      return this.config.children.map(child => {
-        return _.cloneDeep(
-          this.$children[0].$children
-            .find(childComponent => childComponent.config.id === child.id)
-            .getConfig()
-        )
-      })
-    },
-    getComponentName(config) {
-      if (!config || !config.component) return null
-      if (config.component.indexOf('Layout') === -1)
-        return this.$layoutComposer.getComponentName(config.component)
-      return config.component
+      return this.config.children
+        .map(child => {
+          const component = this.$children[0].$children.find(childComponent => {
+            const initialConfig = childComponent.initialConfig ||
+              childComponent.$attrs['initial-config'] || { id: -1 }
+            return initialConfig.id === child.id
+          })
+          return component && _.cloneDeep(component.getConfig())
+        })
+        .filter(Boolean)
     },
     configureForMobile() {
       if (window.innerWidth >= 600) {
@@ -131,6 +140,41 @@ export default {
       } else {
         this.config.props.orientation = 'vertical'
       }
+    },
+
+    // cell methods
+    getComponentName(config) {
+      if (!config || !config.component) return null
+      if (config.component.indexOf('Layout') === -1)
+        return this.$layoutComposer.getComponentName(config.component)
+      return `${config.component}`
+    },
+    getCellProps(config) {
+      return {
+        id: config.id,
+        dragging: config.component === 'Layout' && this.dragging,
+        layoutOrientation: this.config.props.orientation,
+        isFirstChild:
+          this.config.children && this.config.children[0].id === config.id,
+      }
+    },
+    setCellsProps() {
+      this.$children[0].$children.forEach(child => {
+        const initialConfig = child.initialConfig ||
+          child.$attrs['initial-config'] || { id: -1 }
+        const config = this.config.children.find(
+          childConfig => initialConfig.id === childConfig.id
+        )
+        if (config) this.setCellProps(child, config)
+      })
+    },
+    setCellProps(component, config) {
+      if (!component) return
+      if (!component.$children) return
+      // eslint-disable-next-line no-param-reassign
+      component.$children[0].cellConfig = this.getCellProps(config)
+      // eslint-disable-next-line no-param-reassign
+      component.$children[0].draggable = this.editable
     },
     deleteChild(childId) {
       LayoutUtils.removeCell(this.config, childId)
@@ -147,6 +191,12 @@ export default {
   position: relative;
 }
 
+.Layout--empty {
+  background: #ebf4ff;
+  align-items: center;
+  justify-content: center;
+}
+
 .Layout--horizontal {
   flex-direction: row;
 }
@@ -156,7 +206,7 @@ export default {
 }
 
 .Layout--move-hovered {
-  background: #03a696;
+  background: #ebf4ff;
   cursor: grab;
 }
 
