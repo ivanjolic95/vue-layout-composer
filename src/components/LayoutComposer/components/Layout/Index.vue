@@ -11,7 +11,7 @@
       @mousemove="hovered = true"
       @mouseout="hovered = false"
     >
-      <div v-if="!config.children.length">
+      <div v-if="!config.children.length" class="Layout__Description">
         {{ config.props.orientation }} layout
       </div>
       <div
@@ -35,6 +35,10 @@
         :initial-config="child"
         @delete:content="deleteChild(child.id)"
       />
+
+      <button v-if="editable" class="Layout__AddBtn" @click="onAddCell">
+        +
+      </button>
     </div>
   </Cell>
 </template>
@@ -42,6 +46,8 @@
 <script>
 import _ from 'lodash'
 import LayoutUtils from '../../utils/layout'
+
+import EventBus from '../../eventBus'
 
 import Cell from './components/Cell'
 
@@ -113,6 +119,12 @@ export default {
     this.setCellsProps()
   },
   methods: {
+    onAddCell() {
+      EventBus.$emit('global:add-cell', {
+        config: JSON.parse(JSON.stringify(this.getConfig())),
+        configUpdate: this.configUpdate,
+      })
+    },
     configUpdate(newConfig) {
       this.config = newConfig
     },
@@ -228,5 +240,18 @@ export default {
 
 .Layout .Layout__move span {
   margin-left: 2px;
+}
+
+.Layout .Layout__Description {
+  margin: 10px;
+}
+
+.Layout .Layout__AddBtn {
+  margin: 10px;
+  align-self: center;
+  border: none;
+  background: none;
+  font-size: 30px;
+  cursor: pointer;
 }
 </style>

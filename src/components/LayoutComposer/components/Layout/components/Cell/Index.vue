@@ -80,7 +80,7 @@ export default {
       return this.cellConfig && this.cellConfig.isFirstChild
     },
     internalConfig() {
-      return this.config
+      return this.$parent.config
     },
     internalDisplay() {
       return (

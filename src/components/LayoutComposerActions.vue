@@ -18,12 +18,20 @@ export default {
   },
   data() {
     return {
-      editableInternal: this.editable,
+      editableInternal: false,
     }
   },
   computed: {
     stateButtonText() {
       return this.editableInternal ? 'Save' : 'Edit'
+    },
+  },
+  watch: {
+    editable: {
+      handler(val) {
+        this.editableInternal = val
+      },
+      immediate: true,
     },
   },
   methods: {
