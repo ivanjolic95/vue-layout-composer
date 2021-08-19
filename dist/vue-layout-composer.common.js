@@ -31602,14 +31602,14 @@ var Indexvue_type_template_id_0b72d1aa_staticRenderFns = []
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.find.js
 var es6_array_find = __webpack_require__("7514");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3a485186-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LayoutComposer/components/Layout/components/Cell/Index.vue?vue&type=template&id=0504d047&
-var Indexvue_type_template_id_0504d047_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"cell",staticClass:"Layout_Cell",class:_vm.classes,style:(_vm.style),attrs:{"id":("cell-" + _vm.id),"draggable":_vm.draggable},on:{"mousemove":function($event){$event.stopPropagation();return _vm.onMouseMove($event)},"mouseout":function($event){$event.stopPropagation();_vm.hovered = false},"drag":function($event){$event.stopPropagation();return _vm.$emit('internal:drag', $event)},"dragstart":function($event){return _vm.$emit('internal:dragstart', $event)},"dragend":function($event){$event.stopPropagation();return _vm.$emit('internal:dragend', $event)}}},[(_vm.draggable)?_c('div',{staticClass:"Layout_Cell__actions"},[(_vm.$parent.$options.name !== 'Layout')?_c('span',{staticClass:"Layout_Cell__edit",on:{"click":function($event){return _vm.$emit('edit:content')}}},[_c('font-awesome-icon',{attrs:{"icon":"edit"}})],1):_vm._e(),(
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3a485186-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LayoutComposer/components/Layout/components/Cell/Index.vue?vue&type=template&id=4aba856f&
+var Indexvue_type_template_id_4aba856f_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"cell",staticClass:"Layout_Cell",class:_vm.classes,style:(_vm.style),attrs:{"id":("cell-" + _vm.id),"draggable":_vm.draggable},on:{"mousemove":function($event){$event.stopPropagation();return _vm.onMouseMove($event)},"mouseout":function($event){$event.stopPropagation();_vm.hovered = false},"drag":function($event){$event.stopPropagation();return _vm.$emit('internal:drag', $event)},"dragstart":function($event){return _vm.$emit('internal:dragstart', $event)},"dragend":function($event){$event.stopPropagation();return _vm.$emit('internal:dragend', $event)}}},[(_vm.draggable)?_c('div',{staticClass:"Layout_Cell__actions"},[(_vm.$parent.$options.name !== 'Layout')?_c('span',{staticClass:"Layout_Cell__edit",on:{"click":function($event){return _vm.$emit('edit:content')}}},[_c('font-awesome-icon',{attrs:{"icon":"edit"}})],1):_vm._e(),(
         _vm.$parent.$options.name !== 'Layout' || !_vm.$parent.config.children.length
       )?_c('span',{staticClass:"Layout_Cell__delete",on:{"click":function($event){return _vm.$parent.$emit('delete:content')}}},[_c('font-awesome-icon',{attrs:{"icon":"trash"}})],1):_vm._e()]):_vm._e(),_vm._t("default")],2)}
-var Indexvue_type_template_id_0504d047_staticRenderFns = []
+var Indexvue_type_template_id_4aba856f_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/LayoutComposer/components/Layout/components/Cell/Index.vue?vue&type=template&id=0504d047&
+// CONCATENATED MODULE: ./src/components/LayoutComposer/components/Layout/components/Cell/Index.vue?vue&type=template&id=4aba856f&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.replace.js
 var es6_regexp_replace = __webpack_require__("a481");
@@ -31771,9 +31771,9 @@ var getPrevSiblingId = function getPrevSiblingId($cell) {
 
       if (this.layoutOrientation) {
         if (this.layoutOrientation === 'horizontal') {
-          marginLeft = this.isFirstChild ? '0px' : '8px';
+          marginLeft = this.isFirstChild ? '0px' : '12px';
         } else {
-          marginTop = this.isFirstChild ? '0px' : '8px';
+          marginTop = this.isFirstChild ? '0px' : '12px';
         }
       }
 
@@ -31942,7 +31942,7 @@ var getPrevSiblingId = function getPrevSiblingId($cell) {
 
         if (lastLayoutComponent.$attrs.orientation === 'horizontal') {
           placeholderEl.style.marginTop = '0px';
-          placeholderEl.style.marginLeft = '8px';
+          placeholderEl.style.marginLeft = '12px';
 
           if ($el.previousSibling && $el.previousSibling.className && $el.previousSibling.className.indexOf('move')) {
             x += $el.clientWidth / 2;
@@ -31953,7 +31953,7 @@ var getPrevSiblingId = function getPrevSiblingId($cell) {
             $childBeforeEl = $el;
           }
         } else if (lastLayoutComponent.$attrs.orientation === 'vertical') {
-          placeholderEl.style.marginTop = '8px';
+          placeholderEl.style.marginTop = '12px';
           placeholderEl.style.marginLeft = null;
 
           if ($el.previousSibling && $el.previousSibling.className && $el.previousSibling.className.indexOf('move')) {
@@ -31986,7 +31986,7 @@ var getPrevSiblingId = function getPrevSiblingId($cell) {
           placeholderEl.style.marginLeft = '0px';
 
           if (placeholderEl.nextSibling) {
-            placeholderEl.style.marginRight = '8px';
+            placeholderEl.style.marginRight = '12px';
           }
         } else if (placeholderEl.nextSibling) {
           placeholderEl.style.marginRight = '0px';
@@ -32000,7 +32000,7 @@ var getPrevSiblingId = function getPrevSiblingId($cell) {
 
           if (placeholderEl.nextSibling) {
             placeholderEl.style.marginRight = '0px';
-            placeholderEl.style.marginBottom = '8px';
+            placeholderEl.style.marginBottom = '12px';
           }
         } else if (placeholderEl.nextSibling) {
           placeholderEl.style.marginBottom = '0px';
@@ -32065,8 +32065,8 @@ var Indexvue_type_style_index_0_lang_css_ = __webpack_require__("9e67");
 
 var Index_component = normalizeComponent(
   Cell_Indexvue_type_script_lang_js_,
-  Indexvue_type_template_id_0504d047_render,
-  Indexvue_type_template_id_0504d047_staticRenderFns,
+  Indexvue_type_template_id_4aba856f_render,
+  Indexvue_type_template_id_4aba856f_staticRenderFns,
   false,
   null,
   null,
