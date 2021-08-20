@@ -80,7 +80,7 @@ export default {
       return this.cellConfig && this.cellConfig.isFirstChild
     },
     internalConfig() {
-      return this.config
+      return this.$parent.config
     },
     internalDisplay() {
       return (
@@ -92,9 +92,9 @@ export default {
       let marginLeft
       if (this.layoutOrientation) {
         if (this.layoutOrientation === 'horizontal') {
-          marginLeft = this.isFirstChild ? '0px' : '8px'
+          marginLeft = this.isFirstChild ? '0px' : '12px'
         } else {
-          marginTop = this.isFirstChild ? '0px' : '8px'
+          marginTop = this.isFirstChild ? '0px' : '12px'
         }
       }
 
@@ -286,7 +286,7 @@ export default {
 
         if (lastLayoutComponent.$attrs.orientation === 'horizontal') {
           placeholderEl.style.marginTop = '0px'
-          placeholderEl.style.marginLeft = '8px'
+          placeholderEl.style.marginLeft = '12px'
 
           if (
             $el.previousSibling &&
@@ -300,7 +300,7 @@ export default {
             $childBeforeEl = $el
           }
         } else if (lastLayoutComponent.$attrs.orientation === 'vertical') {
-          placeholderEl.style.marginTop = '8px'
+          placeholderEl.style.marginTop = '12px'
           placeholderEl.style.marginLeft = null
 
           if (
@@ -355,7 +355,7 @@ export default {
         if (!placeholderEl.previousSibling) {
           placeholderEl.style.marginLeft = '0px'
           if (placeholderEl.nextSibling) {
-            placeholderEl.style.marginRight = '8px'
+            placeholderEl.style.marginRight = '12px'
           }
         } else if (placeholderEl.nextSibling) {
           placeholderEl.style.marginRight = '0px'
@@ -367,7 +367,7 @@ export default {
           placeholderEl.style.marginTop = '0px'
           if (placeholderEl.nextSibling) {
             placeholderEl.style.marginRight = '0px'
-            placeholderEl.style.marginBottom = '8px'
+            placeholderEl.style.marginBottom = '12px'
           }
         } else if (placeholderEl.nextSibling) {
           placeholderEl.style.marginBottom = '0px'

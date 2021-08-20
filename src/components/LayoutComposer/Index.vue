@@ -8,6 +8,15 @@
       v-bind="configInternal.props"
       :editable="editable"
     />
+
+    <slot
+      name="add-cell"
+      :set-new-cell-config="setNewCellConfig"
+      :layout-config="layoutConfig"
+      :is-adding-new-cell="isAddingNewCell"
+      :end-adding-new-cell="endAddingNewCell"
+      :available-components="availableComponents"
+    />
   </div>
 </template>
 
@@ -19,6 +28,14 @@ import LayoutUtils from './utils/layout'
 import EventBus from './eventBus'
 
 import Layout from './components/Layout'
+
+const wait = ms => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, ms)
+  })
+}
 
 export default {
   name: 'LayoutComposer',
@@ -40,9 +57,35 @@ export default {
     return {
       dragging: false,
       configInternal: {},
+
+      defaultComponents: {
+        Layout: {
+          props: {
+            orientation: {
+              type: String,
+              required: true,
+            },
+          },
+        },
+      },
+
+      // adding cell
+      isAddingNewCell: false,
+      layoutConfig: {},
+      layoutConfigUpdate: () => {},
     }
   },
   computed: {
+    newId() {
+      let count = 0
+      const countNodes = config => {
+        count += 1
+        if (!config.children) return
+        config.children.forEach(child => countNodes(child))
+      }
+      countNodes(this.$children[0].getConfig())
+      return count
+    },
     cellProps() {
       const { configInternal, dragging } = this
       return {
@@ -67,6 +110,12 @@ export default {
         }
       },
     },
+    availableComponents() {
+      return {
+        ...this.defaultComponents,
+        ...this.displayComponents,
+      }
+    },
   },
   watch: {
     configInternal() {
@@ -76,6 +125,7 @@ export default {
     config() {
       this.configInternal = _.cloneDeep(this.config)
       LayoutUtils.addIds(this.configInternal)
+      this.$refs.rootLayout.configUpdate(this.configInternal)
     },
     editable(newValue) {
       // calculate config ONLY if editable is false &
@@ -119,6 +169,12 @@ export default {
       }, 100)
     })
 
+    EventBus.$on('global:add-cell', ({ config, configUpdate }) => {
+      this.isAddingNewCell = true
+      this.layoutConfig = config
+      this.layoutConfigUpdate = configUpdate
+    })
+
     window.documentHasDropListener = true
   },
   methods: {
@@ -126,6 +182,31 @@ export default {
       if (!this.$refs.rootLayout) return
       if (!this.$refs.rootLayout.$children) return
       this.$refs.rootLayout.$children[0].cellConfig = this.cellProps
+    },
+    endAddingNewCell() {
+      this.isAddingNewCell = false
+    },
+    async setNewCellConfig(config) {
+      const configCopy = JSON.parse(JSON.stringify(config))
+      const newConfig =
+        configCopy.component === 'Layout'
+          ? {
+              id: this.newId,
+              children: [],
+              ...configCopy,
+            }
+          : {
+              ...configCopy,
+              id: this.newId,
+            }
+      this.layoutConfigUpdate({
+        ...this.layoutConfig,
+        children: [...this.layoutConfig.children, newConfig],
+      })
+      // hack: force DOM refresh
+      this.$emit('update:editable', false)
+      await wait(100)
+      this.$emit('update:editable', true)
     },
   },
 }
