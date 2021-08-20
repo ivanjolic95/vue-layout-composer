@@ -31339,12 +31339,12 @@ var LayoutComposerActions_component = normalizeComponent(
 )
 
 /* harmony default export */ var LayoutComposerActions = (LayoutComposerActions_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3a485186-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LayoutComposer/Index.vue?vue&type=template&id=17d056f4&
-var Indexvue_type_template_id_17d056f4_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"LayoutComposer"},[_c('Layout',_vm._b({ref:"rootLayout",attrs:{"dragging":_vm.dragging,"display-components":_vm.displayComponents,"initial-config":_vm.configInternal,"editable":_vm.editable}},'Layout',_vm.configInternal.props,false)),_vm._t("add-cell",null,{"setNewCellConfig":_vm.setNewCellConfig,"layoutConfig":_vm.layoutConfig,"isAddingNewCell":_vm.isAddingNewCell,"endAddingNewCell":_vm.endAddingNewCell,"availableComponents":_vm.availableComponents})],2)}
-var Indexvue_type_template_id_17d056f4_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3a485186-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LayoutComposer/Index.vue?vue&type=template&id=0941b70f&
+var Indexvue_type_template_id_0941b70f_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"LayoutComposer"},[_c('Layout',_vm._b({ref:"rootLayout",attrs:{"dragging":_vm.dragging,"display-components":_vm.displayComponents,"initial-config":_vm.configInternal,"editable":_vm.editable}},'Layout',_vm.configInternal.props,false)),_vm._t("add-cell",null,{"setNewCellConfig":_vm.setNewCellConfig,"layoutConfig":_vm.layoutConfig,"isAddingNewCell":_vm.isAddingNewCell,"endAddingNewCell":_vm.endAddingNewCell,"availableComponents":_vm.availableComponents})],2)}
+var Indexvue_type_template_id_0941b70f_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/LayoutComposer/Index.vue?vue&type=template&id=17d056f4&
+// CONCATENATED MODULE: ./src/components/LayoutComposer/Index.vue?vue&type=template&id=0941b70f&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.object.get-own-property-descriptors.js
 var es7_object_get_own_property_descriptors = __webpack_require__("8e6e");
@@ -32456,6 +32456,7 @@ var wait = function wait(ms) {
     config: function config() {
       this.configInternal = lodash_default.a.cloneDeep(this.config);
       layout.addIds(this.configInternal);
+      this.$refs.rootLayout.configUpdate(this.configInternal);
     },
     editable: function editable(newValue) {
       // calculate config ONLY if editable is false &
@@ -32570,8 +32571,8 @@ var LayoutComposer_Indexvue_type_style_index_0_lang_css_ = __webpack_require__("
 
 var LayoutComposer_Index_component = normalizeComponent(
   components_LayoutComposer_Indexvue_type_script_lang_js_,
-  Indexvue_type_template_id_17d056f4_render,
-  Indexvue_type_template_id_17d056f4_staticRenderFns,
+  Indexvue_type_template_id_0941b70f_render,
+  Indexvue_type_template_id_0941b70f_staticRenderFns,
   false,
   null,
   null,

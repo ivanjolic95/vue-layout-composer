@@ -125,6 +125,7 @@ export default {
     config() {
       this.configInternal = _.cloneDeep(this.config)
       LayoutUtils.addIds(this.configInternal)
+      this.$refs.rootLayout.configUpdate(this.configInternal)
     },
     editable(newValue) {
       // calculate config ONLY if editable is false &
